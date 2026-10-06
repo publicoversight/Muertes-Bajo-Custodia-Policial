@@ -7,281 +7,356 @@
 <title>Deaths in Police Custody or during Police Intervention in Spain</title>
 
 <style>
-:root{
-  --paper:#f7f6f1;
-  --ink:#111;
-  --muted:#777;
-  --line:#ddd;
-  --card:#fff;
+:root {
+  --paper: #f7f6f1;
+  --ink: #111;
+  --muted: #777;
+  --line: #ddd;
+  --card: #fff;
 }
 
-*{box-sizing:border-box}
-
-html{scroll-behavior:smooth}
-
-body{
-  margin:0;
-  background:var(--paper);
-  color:var(--ink);
-  font-family:Georgia,"Times New Roman",serif;
+* {
+  box-sizing: border-box;
 }
 
-/* HEADER */
-
-header{
-  min-height:90vh;
-  padding:8vw 6vw;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  border-bottom:1px solid var(--line);
+html {
+  scroll-behavior: smooth;
 }
 
-.kicker{
-  font:11px Arial,sans-serif;
-  letter-spacing:.15em;
-  text-transform:uppercase;
-  color:var(--muted);
-  margin-bottom:20px;
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
 }
 
-h1{
-  max-width:900px;
-  margin:0 0 35px;
-  font-size:clamp(48px,8vw,105px);
-  line-height:.9;
-  font-weight:normal;
-  letter-spacing:-.05em;
+/* INTRO */
+
+header {
+  min-height: 90vh;
+  padding: 8vw 6vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-bottom: 1px solid var(--line);
 }
 
-.intro{
-  max-width:650px;
-  font-size:18px;
-  line-height:1.6;
+.kicker {
+  font: 11px Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .15em;
+  color: var(--muted);
+  margin-bottom: 20px;
 }
 
-.intro p{margin:0 0 16px}
+h1 {
+  max-width: 900px;
+  margin: 0 0 35px;
+  font-size: clamp(50px, 8vw, 110px);
+  line-height: .9;
+  font-weight: normal;
+  letter-spacing: -.05em;
+}
 
-.scroll{
-  margin-top:35px;
-  font:11px Arial,sans-serif;
-  text-transform:uppercase;
-  letter-spacing:.12em;
-  color:var(--muted);
+.intro {
+  max-width: 650px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.intro p {
+  margin: 0 0 16px;
+}
+
+.scroll-note {
+  margin-top: 40px;
+  font: 11px Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
 }
 
 /* CONTROLS */
 
-.controls{
-  position:sticky;
-  top:0;
-  z-index:20;
-  padding:12px 20px;
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  background:rgba(247,246,241,.95);
-  backdrop-filter:blur(10px);
-  border-bottom:1px solid var(--line);
+.controls {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+  background: rgba(247,246,241,.94);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
 }
 
-input,select,button{
-  font:inherit;
+input,
+select,
+button {
+  font: inherit;
 }
 
-input,select{
-  padding:9px 11px;
-  border:1px solid #bbb;
-  background:transparent;
+input,
+select {
+  padding: 9px 11px;
+  border: 1px solid #bbb;
+  background: transparent;
 }
 
-input{
-  width:280px;
+input {
+  width: 280px;
 }
 
-button{
-  cursor:pointer;
+.control {
+  padding: 9px 12px;
+  border: 1px solid #bbb;
+  background: transparent;
+  cursor: pointer;
 }
 
-.control{
-  padding:9px 12px;
-  border:1px solid #bbb;
-  background:transparent;
+.control:hover {
+  background: var(--ink);
+  color: white;
 }
 
-.control:hover{
-  background:var(--ink);
-  color:white;
+#count {
+  margin-left: auto;
+  align-self: center;
+  font: 11px Arial, sans-serif;
+  color: var(--muted);
 }
 
-#count{
-  margin-left:auto;
-  align-self:center;
-  font:11px Arial,sans-serif;
-  color:var(--muted);
+/* THE MAP */
+
+#map {
+  position: relative;
+
+  /* Large scrollable space */
+  height: 5000px;
+
+  overflow: hidden;
+
+  border-bottom: 1px solid var(--line);
+
+  background:
+    linear-gradient(
+      rgba(0,0,0,.035) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(0,0,0,.035) 1px,
+      transparent 1px
+    );
+
+  background-size: 80px 80px;
 }
 
-/* YEARS */
+/* subtle centre mark */
 
-.year{
-  position:relative;
-  min-height:600px;
-  border-bottom:1px solid var(--line);
-  overflow:hidden;
-}
-
-.year-title{
-  position:absolute;
-  top:25px;
-  left:20px;
-  z-index:1;
-  color:#d3d1ca;
-  font:bold clamp(60px,10vw,130px) Georgia,serif;
-  line-height:.8;
-  letter-spacing:-.07em;
-  pointer-events:none;
+#map::before {
+  content: "ARCHIVE";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  font: 11px Arial, sans-serif;
+  letter-spacing: .2em;
+  color: #ccc;
+  pointer-events: none;
 }
 
 /* NAMES */
 
-.case{
-  position:absolute;
-  z-index:2;
-  border:0;
-  background:transparent;
-  padding:0;
-  color:var(--ink);
-  text-align:left;
-  cursor:grab;
-  user-select:none;
-  touch-action:none;
+.case {
+  position: absolute;
+
+  border: 0;
+  padding: 0;
+
+  background: transparent;
+  color: var(--ink);
+
+  text-align: left;
+
+  cursor: grab;
+
+  user-select: none;
+  touch-action: none;
+
+  transition:
+    opacity .25s ease,
+    transform .12s ease;
 }
 
-.case:active{
-  cursor:grabbing;
-  z-index:10;
+.case:active {
+  cursor: grabbing;
+  z-index: 1000;
 }
 
-.name{
-  display:block;
-  font-size:clamp(18px,2vw,27px);
-  line-height:1;
-  white-space:nowrap;
-  border-bottom:1px solid transparent;
+.case:hover {
+  z-index: 100;
 }
 
-.case:hover .name{
-  border-bottom-color:var(--ink);
+.name {
+  display: block;
+
+  font-size: clamp(18px, 2vw, 28px);
+  line-height: 1;
+
+  white-space: nowrap;
+
+  border-bottom: 1px solid transparent;
+}
+
+.case:hover .name {
+  border-bottom-color: var(--ink);
 }
 
 .date,
-.type{
-  display:block;
-  margin-top:5px;
-  font:10px Arial,sans-serif;
-  text-transform:uppercase;
-  letter-spacing:.07em;
-  color:var(--muted);
+.type {
+  display: block;
+
+  margin-top: 5px;
+
+  font: 10px Arial, sans-serif;
+
+  text-transform: uppercase;
+  letter-spacing: .07em;
+
+  color: var(--muted);
+}
+
+/* HIDDEN */
+
+.case.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
 /* MODAL */
 
-dialog{
-  width:min(650px,92vw);
-  max-height:88vh;
-  padding:0;
-  border:1px solid var(--ink);
-  background:var(--card);
-  box-shadow:12px 12px 0 rgba(0,0,0,.08);
+dialog {
+  width: min(650px, 92vw);
+  max-height: 88vh;
+
+  padding: 0;
+
+  border: 1px solid var(--ink);
+
+  background: var(--card);
+
+  box-shadow: 12px 12px 0 rgba(0,0,0,.08);
 }
 
-dialog::backdrop{
-  background:rgba(0,0,0,.4);
+dialog::backdrop {
+  background: rgba(0,0,0,.4);
 }
 
-.card{
-  padding:40px;
+.card {
+  padding: 40px;
 }
 
-.card h2{
-  margin:0 0 8px;
-  font-size:clamp(32px,5vw,55px);
-  line-height:.95;
-  font-weight:normal;
+.card h2 {
+  margin: 0 0 8px;
+
+  font-size: clamp(32px, 5vw, 55px);
+  line-height: .95;
+  font-weight: normal;
 }
 
-.meta{
-  font:11px Arial,sans-serif;
-  color:var(--muted);
-  text-transform:uppercase;
+.meta {
+  font: 11px Arial, sans-serif;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
-.description{
-  margin:25px 0;
-  font-size:17px;
-  line-height:1.6;
+.description {
+  margin: 25px 0;
+
+  font-size: 17px;
+  line-height: 1.6;
 }
 
-.card a{
-  display:block;
-  margin-top:10px;
-  color:var(--ink);
-  font:12px Arial,sans-serif;
-  overflow-wrap:anywhere;
+.card a {
+  display: block;
+
+  margin-top: 10px;
+
+  color: var(--ink);
+
+  font: 12px Arial, sans-serif;
+
+  overflow-wrap: anywhere;
 }
 
-.close{
-  position:absolute;
-  right:12px;
-  top:8px;
-  border:0;
-  background:none;
-  font-size:28px;
-  color:var(--muted);
+.close {
+  position: absolute;
+
+  right: 12px;
+  top: 8px;
+
+  border: 0;
+  background: transparent;
+
+  font-size: 28px;
+
+  color: var(--muted);
+
+  cursor: pointer;
 }
 
 /* EMPTY */
 
-#empty{
-  display:none;
-  min-height:400px;
-  align-items:center;
-  justify-content:center;
-  font:12px Arial,sans-serif;
-  color:var(--muted);
+#empty {
+  display: none;
+
+  padding: 100px 20px;
+
+  text-align: center;
+
+  font: 12px Arial, sans-serif;
+  color: var(--muted);
 }
 
 /* MOBILE */
 
-@media(max-width:700px){
-  header{
-    min-height:auto;
-    padding:70px 22px;
+@media (max-width: 700px) {
+
+  header {
+    min-height: auto;
+    padding: 70px 22px;
   }
 
-  h1{
-    font-size:54px;
+  h1 {
+    font-size: 54px;
   }
 
-  .intro{
-    font-size:16px;
+  .intro {
+    font-size: 16px;
   }
 
-  input{
-    width:100%;
+  input {
+    width: 100%;
   }
 
-  #count{
-    width:100%;
-    margin-left:0;
+  #count {
+    width: 100%;
+    margin-left: 0;
   }
 
-  .year{
-    min-height:700px;
+  #map {
+    height: 4000px;
+    background-size: 60px 60px;
   }
 
-  .card{
-    padding:28px;
+  .name {
+    font-size: 18px;
+  }
+
+  .card {
+    padding: 28px;
   }
 }
 </style>
@@ -290,7 +365,10 @@ dialog::backdrop{
 <body>
 
 <header>
-  <div class="kicker">Interactive archive · Spain</div>
+
+  <div class="kicker">
+    Interactive archive · Spain
+  </div>
 
   <h1>
     Deaths under<br>
@@ -298,6 +376,7 @@ dialog::backdrop{
   </h1>
 
   <div class="intro">
+
     <p>
       This archive brings together cases of people whose deaths
       have been linked to police violence, detention or confinement
@@ -305,330 +384,638 @@ dialog::backdrop{
     </p>
 
     <p>
-      The cases differ substantially. Some occurred during arrests
-      or while people were in custody; others are connected with
-      police interventions, immigration detention centres (CIEs),
-      deportations or actions involving officers off duty.
+      The archive is not arranged as a conventional chronology.
+      Names are distributed across a large visual field and can
+      be moved manually.
     </p>
 
     <p>
-      Some cases resulted in judicial convictions. In others,
-      the circumstances remain disputed, under investigation,
-      or incompletely documented.
+      Scroll through the field, move the names and explore each
+      case individually.
     </p>
+
   </div>
 
-  <div class="scroll">
-    Scroll · drag names to move them
+  <div class="scroll-note">
+    Scroll through the archive · drag the names
   </div>
+
 </header>
 
+
+<!-- CONTROLS -->
+
 <div class="controls">
+
   <input
     id="search"
     type="search"
     placeholder="Search name, place or year"
+    aria-label="Search"
   >
 
-  <select id="filter">
-    <option value="">All categories</option>
+  <select
+    id="filter"
+    aria-label="Filter by category"
+  >
+    <option value="">
+      All categories
+    </option>
   </select>
 
-  <button class="control" id="reset">
+  <button
+    class="control"
+    id="reset"
+    type="button"
+  >
     Reset positions
   </button>
 
   <div id="count"></div>
+
 </div>
 
-<main id="archive"></main>
+
+<!-- LARGE NAME MAP -->
+
+<main id="map"></main>
+
 
 <div id="empty">
   No cases match your search.
 </div>
 
+
+<!-- CASE INFORMATION -->
+
 <dialog id="dialog">
-  <button class="close">×</button>
-  <div class="card" id="card"></div>
+
+  <button
+    class="close"
+    type="button"
+    aria-label="Close"
+  >
+    ×
+  </button>
+
+  <div
+    class="card"
+    id="card"
+  ></div>
+
 </dialog>
+
 
 <script src="data.js"></script>
 
 <script>
-const archive = document.getElementById("archive");
-const search = document.getElementById("search");
-const filter = document.getElementById("filter");
-const reset = document.getElementById("reset");
-const count = document.getElementById("count");
-const empty = document.getElementById("empty");
-const dialog = document.getElementById("dialog");
-const card = document.getElementById("card");
 
-const STORAGE = "police-deaths-positions";
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const map =
+  document.getElementById("map");
+
+const search =
+  document.getElementById("search");
+
+const filter =
+  document.getElementById("filter");
+
+const reset =
+  document.getElementById("reset");
+
+const count =
+  document.getElementById("count");
+
+const empty =
+  document.getElementById("empty");
+
+const dialog =
+  document.getElementById("dialog");
+
+const card =
+  document.getElementById("card");
+
+
+/* =========================================
+   STORAGE
+========================================= */
+
+const STORAGE =
+  "police-deaths-map-positions";
+
+
+let saved = {};
+
+try {
+
+  saved =
+    JSON.parse(
+      localStorage.getItem(STORAGE)
+    ) || {};
+
+} catch {
+
+  saved = {};
+
+}
+
+
+/* =========================================
+   ITEMS
+========================================= */
+
 const items = [];
 
-function clean(text){
-  return (text || "")
+
+/* =========================================
+   HELPERS
+========================================= */
+
+function clean(value) {
+
+  return String(value || "")
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
+
 }
 
-function dateText(date){
-  if(!date) return "";
-  if(date.length === 4) return date;
 
-  const d = new Date(date + "T00:00");
-  return d.toLocaleDateString("en-GB",{
-    day:"numeric",
-    month:"long",
-    year:"numeric"
-  });
+function dateText(date) {
+
+  if (!date) return "";
+
+  if (date.length === 4) {
+    return date;
+  }
+
+  const parts =
+    date.split("-");
+
+  if (parts.length !== 3) {
+    return date;
+  }
+
+  const d =
+    new Date(
+      Date.UTC(
+        Number(parts[0]),
+        Number(parts[1]) - 1,
+        Number(parts[2])
+      )
+    );
+
+  return d.toLocaleDateString(
+    "en-GB",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC"
+    }
+  );
+
 }
 
-/* CREATE YEARS */
 
-const groups = {};
+/* =========================================
+   RANDOM POSITION
+========================================= */
 
-CASOS.forEach(caso=>{
-  const year = caso.fecha
-    ? caso.fecha.slice(0,4)
-    : "Unknown";
+function randomPosition(button) {
 
-  if(!groups[year]) groups[year] = [];
-  groups[year].push(caso);
-});
+  const margin = 60;
 
-const positions =
-  JSON.parse(localStorage.getItem(STORAGE) || "{}");
+  const maxX =
+    Math.max(
+      margin,
+      map.clientWidth -
+      button.offsetWidth -
+      margin
+    );
 
-Object.keys(groups)
-  .sort((a,b)=>Number(a)-Number(b))
-  .forEach(year=>{
+  const maxY =
+    Math.max(
+      150,
+      map.clientHeight -
+      button.offsetHeight -
+      margin
+    );
 
-    const section = document.createElement("section");
-    section.className = "year";
+  return {
 
-    const title = document.createElement("div");
-    title.className = "year-title";
-    title.textContent = year;
+    x:
+      margin +
+      Math.random() *
+      Math.max(1, maxX - margin),
 
-    section.appendChild(title);
-    archive.appendChild(section);
+    y:
+      120 +
+      Math.random() *
+      Math.max(1, maxY - 120)
 
-    groups[year].forEach(caso=>{
+  };
 
-      const button = document.createElement("button");
-      button.className = "case";
-      button.type = "button";
+}
 
-      button.innerHTML = `
-        <span class="name">${caso.nombre}</span>
-        <span class="date">${dateText(caso.fecha)}</span>
-        <span class="type">
-          ${TIPOS[caso.tipo] || "No information"}
-        </span>
-      `;
 
-      section.appendChild(button);
+/* =========================================
+   CREATE NAMES
+========================================= */
 
-      const saved = positions[caso.id];
+CASOS.forEach(caso => {
 
-      const item = {
-        caso,
-        button,
-        section,
-        x: saved ? saved.x : 60 + Math.random() * 60,
-        y: saved ? saved.y : 130 + Math.random() * 350,
-        dragging:false,
-        moved:false
-      };
+  const button =
+    document.createElement("button");
 
-      items.push(item);
+  button.type = "button";
 
-      button.style.left = item.x + "px";
-      button.style.top = item.y + "px";
+  button.className = "case";
 
-      /* CLICK / DRAG */
 
-      button.addEventListener("pointerdown",e=>{
+  button.innerHTML = `
 
-        if(e.button !== 0) return;
+    <span class="name">
+      ${caso.nombre}
+    </span>
 
-        item.dragging = true;
-        item.moved = false;
+    <span class="date">
+      ${dateText(caso.fecha)}
+    </span>
 
-        const rect = section.getBoundingClientRect();
+    <span class="type">
+      ${TIPOS[caso.tipo] || "No information"}
+    </span>
 
-        item.offsetX =
-          e.clientX - rect.left - item.x;
+  `;
 
-        item.offsetY =
-          e.clientY - rect.top - item.y;
 
-        button.setPointerCapture(e.pointerId);
+  map.appendChild(button);
 
-      });
 
-      button.addEventListener("pointermove",e=>{
+  const position =
+    saved[caso.id] ||
+    randomPosition(button);
 
-        if(!item.dragging) return;
 
-        item.moved = true;
+  const item = {
 
-        const rect = section.getBoundingClientRect();
+    caso,
 
-        item.x =
-          e.clientX -
-          rect.left -
-          item.offsetX;
+    button,
 
-        item.y =
-          e.clientY -
-          rect.top -
-          item.offsetY;
+    x: position.x,
 
-        item.x = Math.max(
+    y: position.y,
+
+    dragging: false,
+
+    moved: false
+
+  };
+
+
+  items.push(item);
+
+
+  render(item);
+
+
+  /* =====================================
+     DRAG
+  ===================================== */
+
+  button.addEventListener(
+    "pointerdown",
+    event => {
+
+      if (event.button !== 0) {
+        return;
+      }
+
+      item.dragging = true;
+      item.moved = false;
+
+      const rect =
+        map.getBoundingClientRect();
+
+      item.offsetX =
+        event.clientX -
+        rect.left -
+        item.x;
+
+      item.offsetY =
+        event.clientY -
+        rect.top -
+        item.y;
+
+      button.setPointerCapture(
+        event.pointerId
+      );
+
+      button.style.zIndex = "1000";
+
+    }
+  );
+
+
+  button.addEventListener(
+    "pointermove",
+    event => {
+
+      if (!item.dragging) {
+        return;
+      }
+
+      item.moved = true;
+
+      const rect =
+        map.getBoundingClientRect();
+
+      item.x =
+        event.clientX -
+        rect.left -
+        item.offsetX;
+
+      item.y =
+        event.clientY -
+        rect.top -
+        item.offsetY;
+
+
+      item.x =
+        Math.max(
           0,
           Math.min(
             item.x,
-            section.clientWidth - button.offsetWidth
+            map.clientWidth -
+            button.offsetWidth
           )
         );
 
-        item.y = Math.max(
+
+      item.y =
+        Math.max(
           80,
           Math.min(
             item.y,
-            section.clientHeight - button.offsetHeight
+            map.clientHeight -
+            button.offsetHeight
           )
         );
 
-        button.style.left = item.x + "px";
-        button.style.top = item.y + "px";
 
-      });
+      render(item);
 
-      button.addEventListener("pointerup",e=>{
+    }
+  );
 
-        item.dragging = false;
 
-        try{
-          button.releasePointerCapture(e.pointerId);
-        }catch{}
+  button.addEventListener(
+    "pointerup",
+    event => {
 
-        savePositions();
+      if (!item.dragging) {
+        return;
+      }
 
-        if(!item.moved){
-          openCase(caso);
-        }
+      item.dragging = false;
 
-      });
+      button.style.zIndex = "";
 
-    });
-  });
+      try {
 
-/* SAVE */
+        button.releasePointerCapture(
+          event.pointerId
+        );
 
-function savePositions(){
+      } catch {}
 
-  const data = {};
 
-  items.forEach(item=>{
-    data[item.caso.id] = {
-      x:item.x,
-      y:item.y
+      save();
+
+
+      /* Click only if the name wasn't moved */
+
+      if (!item.moved) {
+        openCase(caso);
+      }
+
+    }
+  );
+
+
+  button.addEventListener(
+    "pointercancel",
+    () => {
+
+      item.dragging = false;
+
+      button.style.zIndex = "";
+
+    }
+  );
+
+});
+
+
+/* =========================================
+   RENDER
+========================================= */
+
+function render(item) {
+
+  item.button.style.left =
+    item.x + "px";
+
+  item.button.style.top =
+    item.y + "px";
+
+}
+
+
+/* =========================================
+   SAVE POSITIONS
+========================================= */
+
+function save() {
+
+  const positions = {};
+
+  items.forEach(item => {
+
+    positions[item.caso.id] = {
+
+      x: item.x,
+      y: item.y
+
     };
+
   });
 
   localStorage.setItem(
     STORAGE,
-    JSON.stringify(data)
+    JSON.stringify(positions)
   );
+
 }
 
-/* RESET */
 
-reset.addEventListener("click",()=>{
+/* =========================================
+   RESET
+========================================= */
 
-  localStorage.removeItem(STORAGE);
+reset.addEventListener(
+  "click",
+  () => {
 
-  items.forEach(item=>{
+    localStorage.removeItem(
+      STORAGE
+    );
 
-    item.x = 60 + Math.random() * 60;
-    item.y = 130 + Math.random() * 350;
+    items.forEach(item => {
 
-    item.button.style.left = item.x + "px";
-    item.button.style.top = item.y + "px";
+      const p =
+        randomPosition(
+          item.button
+        );
 
-  });
+      item.x = p.x;
+      item.y = p.y;
 
-});
+      render(item);
 
-/* FILTER */
+    });
 
-Object.entries(TIPOS).forEach(([key,label])=>{
+    save();
 
-  const option = document.createElement("option");
+  }
+);
 
-  option.value = key;
-  option.textContent = label;
 
-  filter.appendChild(option);
+/* =========================================
+   FILTER OPTIONS
+========================================= */
 
-});
+Object.entries(TIPOS).forEach(
+  ([key, label]) => {
 
-function update(){
+    const option =
+      document.createElement("option");
 
-  const q = clean(search.value);
-  const type = filter.value;
+    option.value = key;
+
+    option.textContent = label;
+
+    filter.appendChild(option);
+
+  }
+);
+
+
+/* =========================================
+   SEARCH / FILTER
+========================================= */
+
+function update() {
+
+  const query =
+    clean(search.value);
+
+  const selected =
+    filter.value;
 
   let visible = 0;
 
-  items.forEach(item=>{
 
-    const c = item.caso;
+  items.forEach(item => {
 
-    const text = clean([
-      c.nombre,
-      c.lugar,
-      c.fecha,
-      c.causa,
-      TIPOS[c.tipo]
-    ].join(" "));
+    const c =
+      item.caso;
+
+
+    const searchable =
+      clean([
+        c.nombre,
+        c.lugar,
+        c.fecha,
+        c.causa,
+        c.texto,
+        TIPOS[c.tipo]
+      ].join(" "));
+
+
+    const matchesSearch =
+      !query ||
+      searchable.includes(query);
+
+
+    const matchesType =
+      !selected ||
+      c.tipo === selected;
+
 
     const show =
-      (!q || text.includes(q)) &&
-      (!type || c.tipo === type);
+      matchesSearch &&
+      matchesType;
 
-    item.button.style.display =
-      show ? "" : "none";
 
-    if(show) visible++;
+    item.button.classList.toggle(
+      "hidden",
+      !show
+    );
+
+
+    if (show) {
+      visible++;
+    }
 
   });
+
 
   count.textContent =
     `${visible} of ${items.length} cases`;
 
+
   empty.style.display =
-    visible ? "none" : "flex";
+    visible === 0
+      ? "block"
+      : "none";
+
 }
 
-search.addEventListener("input",update);
-filter.addEventListener("change",update);
 
-/* CASE WINDOW */
+search.addEventListener(
+  "input",
+  update
+);
 
-function openCase(caso){
+filter.addEventListener(
+  "change",
+  update
+);
+
+
+/* =========================================
+   OPEN CASE
+========================================= */
+
+function openCase(caso) {
 
   const sources =
     Array.isArray(caso.fuentes)
       ? caso.fuentes
       : [];
 
+
   card.innerHTML = `
-    <h2>${caso.nombre}</h2>
+
+    <h2>
+      ${caso.nombre}
+    </h2>
 
     <div class="meta">
       ${dateText(caso.fecha)}
@@ -637,30 +1024,65 @@ function openCase(caso){
     </div>
 
     <div class="description">
-      ${caso.texto || caso.causa || "No information available."}
+      ${
+        caso.texto ||
+        caso.causa ||
+        "No information available."
+      }
     </div>
 
-    ${sources.map(url=>`
-      <a
-        href="${url}"
-        target="_blank"
-        rel="noopener noreferrer"
-      >${url}</a>
-    `).join("")}
+    ${
+      sources.map(url => `
+        <a
+          href="${url}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ${url}
+        </a>
+      `).join("")
+    }
+
   `;
 
+
   dialog.showModal();
+
 }
+
+
+/* =========================================
+   CLOSE
+========================================= */
 
 document
   .querySelector(".close")
-  .addEventListener("click",()=>dialog.close());
+  .addEventListener(
+    "click",
+    () => dialog.close()
+  );
 
-dialog.addEventListener("click",e=>{
-  if(e.target === dialog) dialog.close();
-});
+
+dialog.addEventListener(
+  "click",
+  event => {
+
+    if (
+      event.target === dialog
+    ) {
+      dialog.close();
+    }
+
+  }
+);
+
+
+/* =========================================
+   START
+========================================= */
 
 update();
+
 </script>
 
 </body>
