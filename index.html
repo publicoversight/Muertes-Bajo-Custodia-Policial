@@ -1,586 +1,296 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>Deaths in Police Custody or during Police Intervention in Spain</title>
 
 <style>
-
-:root {
-  --ink: #111;
-  --muted: #777;
-  --line: #dedede;
-  --paper: #f8f7f3;
-  --card: #fff;
-  --accent: #b3261e;
+:root{
+  --paper:#f7f6f1;
+  --ink:#111;
+  --muted:#777;
+  --line:#ddd;
+  --card:#fff;
 }
 
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:Georgia,"Times New Roman",serif;
 }
 
-html {
-  scroll-behavior: smooth;
+/* HEADER */
+
+header{
+  min-height:90vh;
+  padding:8vw 6vw;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  border-bottom:1px solid var(--line);
 }
 
-body {
-  margin: 0;
-  background: var(--paper);
-  color: var(--ink);
-  font-family: Georgia, "Times New Roman", serif;
+.kicker{
+  font:11px Arial,sans-serif;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:20px;
 }
 
-
-/* =========================================
-   HEADER
-========================================= */
-
-header {
-  min-height: 100vh;
-  padding: 9vh 6vw 6vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border-bottom: 1px solid var(--line);
+h1{
+  max-width:900px;
+  margin:0 0 35px;
+  font-size:clamp(48px,8vw,105px);
+  line-height:.9;
+  font-weight:normal;
+  letter-spacing:-.05em;
 }
 
-.kicker {
-  font-family: Arial, sans-serif;
-  text-transform: uppercase;
-  letter-spacing: .14em;
-  font-size: 11px;
-  color: var(--muted);
-  margin-bottom: 20px;
+.intro{
+  max-width:650px;
+  font-size:18px;
+  line-height:1.6;
 }
 
-h1 {
-  max-width: 900px;
-  font-size: clamp(48px, 8vw, 110px);
-  line-height: .92;
-  font-weight: normal;
-  letter-spacing: -.045em;
-  margin: 0 0 40px;
+.intro p{margin:0 0 16px}
+
+.scroll{
+  margin-top:35px;
+  font:11px Arial,sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:var(--muted);
 }
 
-.intro {
-  max-width: 680px;
-  font-size: 18px;
-  line-height: 1.65;
+/* CONTROLS */
+
+.controls{
+  position:sticky;
+  top:0;
+  z-index:20;
+  padding:12px 20px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  background:rgba(247,246,241,.95);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
 }
 
-.intro p {
-  margin: 0 0 18px;
+input,select,button{
+  font:inherit;
 }
 
-.scroll-note {
-  margin-top: 50px;
-  font-family: Arial, sans-serif;
-  font-size: 11px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--muted);
+input,select{
+  padding:9px 11px;
+  border:1px solid #bbb;
+  background:transparent;
 }
 
-.scroll-note span {
-  display: inline-block;
-  margin-left: 8px;
-  animation: arrow 1.5s infinite;
+input{
+  width:280px;
 }
 
-@keyframes arrow {
-  0%, 100% {
-    transform: translateY(0);
+button{
+  cursor:pointer;
+}
+
+.control{
+  padding:9px 12px;
+  border:1px solid #bbb;
+  background:transparent;
+}
+
+.control:hover{
+  background:var(--ink);
+  color:white;
+}
+
+#count{
+  margin-left:auto;
+  align-self:center;
+  font:11px Arial,sans-serif;
+  color:var(--muted);
+}
+
+/* YEARS */
+
+.year{
+  position:relative;
+  min-height:600px;
+  border-bottom:1px solid var(--line);
+  overflow:hidden;
+}
+
+.year-title{
+  position:absolute;
+  top:25px;
+  left:20px;
+  z-index:1;
+  color:#d3d1ca;
+  font:bold clamp(60px,10vw,130px) Georgia,serif;
+  line-height:.8;
+  letter-spacing:-.07em;
+  pointer-events:none;
+}
+
+/* NAMES */
+
+.case{
+  position:absolute;
+  z-index:2;
+  border:0;
+  background:transparent;
+  padding:0;
+  color:var(--ink);
+  text-align:left;
+  cursor:grab;
+  user-select:none;
+  touch-action:none;
+}
+
+.case:active{
+  cursor:grabbing;
+  z-index:10;
+}
+
+.name{
+  display:block;
+  font-size:clamp(18px,2vw,27px);
+  line-height:1;
+  white-space:nowrap;
+  border-bottom:1px solid transparent;
+}
+
+.case:hover .name{
+  border-bottom-color:var(--ink);
+}
+
+.date,
+.type{
+  display:block;
+  margin-top:5px;
+  font:10px Arial,sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  color:var(--muted);
+}
+
+/* MODAL */
+
+dialog{
+  width:min(650px,92vw);
+  max-height:88vh;
+  padding:0;
+  border:1px solid var(--ink);
+  background:var(--card);
+  box-shadow:12px 12px 0 rgba(0,0,0,.08);
+}
+
+dialog::backdrop{
+  background:rgba(0,0,0,.4);
+}
+
+.card{
+  padding:40px;
+}
+
+.card h2{
+  margin:0 0 8px;
+  font-size:clamp(32px,5vw,55px);
+  line-height:.95;
+  font-weight:normal;
+}
+
+.meta{
+  font:11px Arial,sans-serif;
+  color:var(--muted);
+  text-transform:uppercase;
+}
+
+.description{
+  margin:25px 0;
+  font-size:17px;
+  line-height:1.6;
+}
+
+.card a{
+  display:block;
+  margin-top:10px;
+  color:var(--ink);
+  font:12px Arial,sans-serif;
+  overflow-wrap:anywhere;
+}
+
+.close{
+  position:absolute;
+  right:12px;
+  top:8px;
+  border:0;
+  background:none;
+  font-size:28px;
+  color:var(--muted);
+}
+
+/* EMPTY */
+
+#empty{
+  display:none;
+  min-height:400px;
+  align-items:center;
+  justify-content:center;
+  font:12px Arial,sans-serif;
+  color:var(--muted);
+}
+
+/* MOBILE */
+
+@media(max-width:700px){
+  header{
+    min-height:auto;
+    padding:70px 22px;
   }
 
-  50% {
-    transform: translateY(5px);
-  }
-}
-
-
-/* =========================================
-   CONTROL BAR
-========================================= */
-
-.controls-wrap {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgba(248,247,243,.94);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line);
-}
-
-.controls {
-  max-width: 1500px;
-  margin: auto;
-  padding: 12px 24px;
-
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-input,
-select,
-button {
-  font: inherit;
-}
-
-input,
-select {
-  border: 1px solid #bbb;
-  background: transparent;
-  padding: 9px 12px;
-  color: var(--ink);
-}
-
-input {
-  width: 280px;
-}
-
-button {
-  cursor: pointer;
-}
-
-.control-button {
-  border: 1px solid #bbb;
-  background: transparent;
-  padding: 9px 12px;
-}
-
-.control-button:hover {
-  background: var(--ink);
-  color: white;
-}
-
-#count {
-  margin-left: auto;
-  font-family: Arial, sans-serif;
-  font-size: 11px;
-  color: var(--muted);
-}
-
-
-/* =========================================
-   ARCHIVE
-========================================= */
-
-#archive {
-  position: relative;
-}
-
-.year-section {
-  position: relative;
-  min-height: 650px;
-  border-bottom: 1px solid var(--line);
-  overflow: hidden;
-}
-
-.year-label {
-  position: absolute;
-  left: 24px;
-  top: 28px;
-
-  font-family: Arial, sans-serif;
-  font-size: 12px;
-  color: var(--muted);
-
-  letter-spacing: .12em;
-  text-transform: uppercase;
-
-  z-index: 5;
-}
-
-.year-label strong {
-  display: block;
-  font-family: Georgia, serif;
-  font-size: clamp(50px, 8vw, 110px);
-  line-height: .8;
-  font-weight: normal;
-  color: #d5d3cc;
-  letter-spacing: -.05em;
-}
-
-
-/* =========================================
-   CASE NAME
-========================================= */
-
-.case {
-  position: absolute;
-
-  border: 0;
-  padding: 0;
-
-  background: transparent;
-  color: var(--ink);
-
-  text-align: left;
-
-  cursor: grab;
-
-  transition:
-    opacity .25s ease,
-    transform .18s ease;
-}
-
-.case:active {
-  cursor: grabbing;
-}
-
-.case:hover {
-  z-index: 20;
-}
-
-.case-name {
-  display: block;
-
-  font-size: clamp(18px, 2vw, 27px);
-  line-height: 1;
-
-  white-space: nowrap;
-
-  border-bottom: 1px solid transparent;
-}
-
-.case:hover .case-name {
-  border-bottom-color: var(--ink);
-}
-
-.case-date {
-  display: block;
-
-  margin-top: 6px;
-
-  font-family: Arial, sans-serif;
-  font-size: 10px;
-  color: var(--muted);
-
-  text-transform: uppercase;
-  letter-spacing: .08em;
-}
-
-.case-type {
-  display: block;
-
-  margin-top: 3px;
-
-  font-family: Arial, sans-serif;
-  font-size: 10px;
-
-  color: var(--muted);
-}
-
-.case::after {
-  content: "";
-
-  position: absolute;
-
-  left: -8px;
-  top: -8px;
-
-  width: calc(100% + 16px);
-  height: calc(100% + 16px);
-
-  background: rgba(255,255,255,.92);
-
-  z-index: -1;
-
-  opacity: 0;
-
-  transition: opacity .2s;
-}
-
-.case:hover::after {
-  opacity: 1;
-}
-
-
-/* =========================================
-   HOVER PREVIEW
-========================================= */
-
-.preview {
-  position: fixed;
-
-  width: min(390px, calc(100vw - 40px));
-
-  padding: 20px;
-
-  background: var(--card);
-
-  border: 1px solid var(--ink);
-
-  pointer-events: none;
-
-  opacity: 0;
-
-  transform: translateY(8px);
-
-  transition:
-    opacity .15s ease,
-    transform .15s ease;
-
-  z-index: 100;
-
-  box-shadow: 8px 8px 0 rgba(0,0,0,.06);
-}
-
-.preview.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.preview h3 {
-  margin: 0 0 5px;
-  font-size: 24px;
-  font-weight: normal;
-}
-
-.preview .preview-meta {
-  font-family: Arial, sans-serif;
-  font-size: 11px;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: .05em;
-}
-
-.preview p {
-  font-size: 14px;
-  line-height: 1.55;
-  margin: 14px 0 0;
-}
-
-
-/* =========================================
-   HIDDEN CASE
-========================================= */
-
-.case.hidden {
-  opacity: 0;
-  pointer-events: none;
-}
-
-
-/* =========================================
-   EMPTY
-========================================= */
-
-#empty {
-  display: none;
-
-  min-height: 500px;
-
-  align-items: center;
-  justify-content: center;
-
-  font-family: Arial, sans-serif;
-  color: var(--muted);
-}
-
-
-/* =========================================
-   DIALOG
-========================================= */
-
-dialog {
-  width: min(650px, 92vw);
-
-  max-height: 88vh;
-
-  border: 1px solid var(--ink);
-
-  padding: 0;
-
-  background: var(--card);
-
-  box-shadow:
-    15px 15px 0 rgba(0,0,0,.08);
-}
-
-dialog::backdrop {
-  background: rgba(0,0,0,.35);
-  backdrop-filter: blur(4px);
-}
-
-.card {
-  padding: clamp(25px, 5vw, 50px);
-}
-
-.card h2 {
-  margin: 0 0 8px;
-
-  font-size: clamp(32px, 5vw, 52px);
-
-  font-weight: normal;
-
-  line-height: .95;
-}
-
-.meta {
-  font-family: Arial, sans-serif;
-
-  font-size: 11px;
-
-  color: var(--muted);
-
-  text-transform: uppercase;
-
-  letter-spacing: .06em;
-}
-
-.tipo {
-  margin-top: 20px;
-
-  padding-top: 15px;
-
-  border-top: 1px solid var(--line);
-
-  font-family: Arial, sans-serif;
-
-  font-size: 12px;
-
-  color: var(--muted);
-}
-
-.card .texto {
-  margin: 25px 0;
-
-  font-size: 17px;
-
-  line-height: 1.65;
-}
-
-.card a {
-  display: block;
-
-  margin-top: 12px;
-
-  color: var(--ink);
-
-  font-family: Arial, sans-serif;
-
-  font-size: 12px;
-}
-
-.close {
-  position: absolute;
-
-  right: 15px;
-  top: 10px;
-
-  border: 0;
-
-  background: transparent;
-
-  font-size: 28px;
-
-  color: var(--muted);
-}
-
-.close:hover {
-  color: var(--ink);
-}
-
-
-/* =========================================
-   FOOTER
-========================================= */
-
-footer {
-  padding: 80px 24px;
-
-  border-top: 1px solid var(--line);
-
-  text-align: center;
-
-  font-family: Arial, sans-serif;
-
-  font-size: 11px;
-
-  color: var(--muted);
-}
-
-
-/* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 700px) {
-
-  header {
-    min-height: auto;
-    padding: 70px 22px 55px;
+  h1{
+    font-size:54px;
   }
 
-  h1 {
-    font-size: 54px;
+  .intro{
+    font-size:16px;
   }
 
-  .intro {
-    font-size: 16px;
+  input{
+    width:100%;
   }
 
-  .controls {
-    padding: 10px 14px;
+  #count{
+    width:100%;
+    margin-left:0;
   }
 
-  input {
-    width: 100%;
+  .year{
+    min-height:700px;
   }
 
-  #count {
-    margin-left: 0;
-    width: 100%;
+  .card{
+    padding:28px;
   }
-
-  .year-section {
-    min-height: 850px;
-  }
-
-  .year-label {
-    left: 14px;
-  }
-
-  .case-name {
-    font-size: 18px;
-  }
-
 }
-
-
-/* =========================================
-   REDUCED MOTION
-========================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-  html {
-    scroll-behavior: auto;
-  }
-
-  .scroll-note span {
-    animation: none;
-  }
-
-}
-
 </style>
 </head>
 
-
 <body>
 
-
 <header>
-
-  <div class="kicker">
-    Interactive archive · Spain
-  </div>
+  <div class="kicker">Interactive archive · Spain</div>
 
   <h1>
     Deaths under<br>
@@ -588,7 +298,6 @@ footer {
   </h1>
 
   <div class="intro">
-
     <p>
       This archive brings together cases of people whose deaths
       have been linked to police violence, detention or confinement
@@ -607,586 +316,352 @@ footer {
       the circumstances remain disputed, under investigation,
       or incompletely documented.
     </p>
-
   </div>
 
-  <div class="scroll-note">
-    Scroll through the archive
-    <span>↓</span>
+  <div class="scroll">
+    Scroll · drag names to move them
   </div>
-
 </header>
 
-
-<!-- ======================================
-     CONTROLS
-======================================= -->
-
-<div class="controls-wrap">
-
-  <div class="controls">
-
-    <input
-      id="q"
-      type="search"
-      placeholder="Search name, place or year"
-      aria-label="Search"
-    >
-
-    <select
-      id="fTipo"
-      aria-label="Filter by type"
-    >
-      <option value="">
-        All categories
-      </option>
-    </select>
-
-    <button
-      class="control-button"
-      id="pause"
-      aria-pressed="false"
-    >
-      Pause movement
-    </button>
-
-    <button
-      class="control-button"
-      id="reset"
-    >
-      Reset positions
-    </button>
-
-    <div id="count"></div>
-
-  </div>
-
-</div>
-
-
-<!-- ======================================
-     ARCHIVE
-======================================= -->
-
-<main id="archive">
-
-  <div id="empty">
-    No cases match your search.
-  </div>
-
-</main>
-
-
-<!-- ======================================
-     HOVER PREVIEW
-======================================= -->
-
-<div
-  class="preview"
-  id="preview"
-  aria-hidden="true"
-></div>
-
-
-<!-- ======================================
-     DIALOG
-======================================= -->
-
-<dialog id="dlg">
-
-  <button
-    class="close"
-    aria-label="Close"
+<div class="controls">
+  <input
+    id="search"
+    type="search"
+    placeholder="Search name, place or year"
   >
-    ×
+
+  <select id="filter">
+    <option value="">All categories</option>
+  </select>
+
+  <button class="control" id="reset">
+    Reset positions
   </button>
 
-  <div
-    class="card"
-    id="card"
-  ></div>
+  <div id="count"></div>
+</div>
 
+<main id="archive"></main>
+
+<div id="empty">
+  No cases match your search.
+</div>
+
+<dialog id="dialog">
+  <button class="close">×</button>
+  <div class="card" id="card"></div>
 </dialog>
-
-
-<footer>
-  Interactive archive · Sources are provided with each case
-</footer>
-
 
 <script src="data.js"></script>
 
 <script>
+const archive = document.getElementById("archive");
+const search = document.getElementById("search");
+const filter = document.getElementById("filter");
+const reset = document.getElementById("reset");
+const count = document.getElementById("count");
+const empty = document.getElementById("empty");
+const dialog = document.getElementById("dialog");
+const card = document.getElementById("card");
 
-
-/* =========================================
-   ELEMENTS
-========================================= */
-
-const archive =
-  document.getElementById("archive");
-
-const dialog =
-  document.getElementById("dlg");
-
-const card =
-  document.getElementById("card");
-
-const preview =
-  document.getElementById("preview");
-
-const search =
-  document.getElementById("q");
-
-const filterType =
-  document.getElementById("fTipo");
-
-const pauseButton =
-  document.getElementById("pause");
-
-const resetButton =
-  document.getElementById("reset");
-
-const count =
-  document.getElementById("count");
-
-const empty =
-  document.getElementById("empty");
-
-
-/* =========================================
-   UTILITIES
-========================================= */
-
-const normalize = text =>
-  (text || "")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase();
-
-
-function formatDate(date) {
-
-  if (!date || date.length !== 10) {
-    return date || "";
-  }
-
-  return new Date(date + "T00:00")
-    .toLocaleDateString(
-      "en-GB",
-      {
-        day: "numeric",
-        month: "long",
-        year: "numeric"
-      }
-    );
-}
-
-
-/* =========================================
-   GROUP CASES BY YEAR
-========================================= */
-
-const grouped = {};
-
-CASOS.forEach(caso => {
-
-  const year =
-    caso.fecha
-      ? caso.fecha.slice(0, 4)
-      : "Unknown";
-
-  if (!grouped[year]) {
-    grouped[year] = [];
-  }
-
-  grouped[year].push(caso);
-
-});
-
-
-const years =
-  Object.keys(grouped)
-    .sort((a, b) => {
-
-      if (a === "Unknown") return 1;
-      if (b === "Unknown") return -1;
-
-      return Number(a) - Number(b);
-
-    });
-
-
-/* =========================================
-   CREATE YEAR SECTIONS
-========================================= */
-
-const sections = {};
-
-years.forEach(year => {
-
-  const section =
-    document.createElement("section");
-
-  section.className =
-    "year-section";
-
-  section.dataset.year = year;
-
-
-  const label =
-    document.createElement("div");
-
-  label.className =
-    "year-label";
-
-  label.innerHTML = `
-    <strong>${year}</strong>
-    archive
-  `;
-
-
-  section.appendChild(label);
-
-  archive.appendChild(section);
-
-  sections[year] = section;
-
-});
-
-
-/* =========================================
-   CASE OBJECTS
-========================================= */
-
+const STORAGE = "police-deaths-positions";
 const items = [];
 
-
-/* =========================================
-   SAVED POSITIONS
-========================================= */
-
-const STORAGE_KEY =
-  "spain-police-deaths-positions-v2";
-
-
-let savedPositions = {};
-
-try {
-
-  savedPositions =
-    JSON.parse(
-      localStorage.getItem(STORAGE_KEY)
-    ) || {};
-
-} catch {
-
-  savedPositions = {};
-
+function clean(text){
+  return (text || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .toLowerCase();
 }
 
+function dateText(date){
+  if(!date) return "";
+  if(date.length === 4) return date;
 
-/* =========================================
-   RANDOM POSITION
-========================================= */
-
-function randomPosition(section, element) {
-
-  const padding = 50;
-
-  const width =
-    section.clientWidth;
-
-  const height =
-    section.clientHeight;
-
-  const maxX =
-    Math.max(
-      padding,
-      width - element.offsetWidth - padding
-    );
-
-  const maxY =
-    Math.max(
-      100,
-      height - element.offsetHeight - padding
-    );
-
-  return {
-
-    x:
-      padding +
-      Math.random() *
-      Math.max(1, maxX - padding),
-
-    y:
-      100 +
-      Math.random() *
-      Math.max(1, maxY - 100)
-
-  };
-
+  const d = new Date(date + "T00:00");
+  return d.toLocaleDateString("en-GB",{
+    day:"numeric",
+    month:"long",
+    year:"numeric"
+  });
 }
 
+/* CREATE YEARS */
 
-/* =========================================
-   CREATE CASES
-========================================= */
+const groups = {};
 
-CASOS.forEach((caso, index) => {
+CASOS.forEach(caso=>{
+  const year = caso.fecha
+    ? caso.fecha.slice(0,4)
+    : "Unknown";
 
-  const year =
-    caso.fecha
-      ? caso.fecha.slice(0, 4)
-      : "Unknown";
+  if(!groups[year]) groups[year] = [];
+  groups[year].push(caso);
+});
 
-  const section =
-    sections[year];
+const positions =
+  JSON.parse(localStorage.getItem(STORAGE) || "{}");
 
+Object.keys(groups)
+  .sort((a,b)=>Number(a)-Number(b))
+  .forEach(year=>{
 
-  const button =
-    document.createElement("button");
+    const section = document.createElement("section");
+    section.className = "year";
 
-  button.className =
-    "case";
+    const title = document.createElement("div");
+    title.className = "year-title";
+    title.textContent = year;
 
-  button.type =
-    "button";
+    section.appendChild(title);
+    archive.appendChild(section);
 
+    groups[year].forEach(caso=>{
 
-  const name =
-    document.createElement("span");
+      const button = document.createElement("button");
+      button.className = "case";
+      button.type = "button";
 
-  name.className =
-    "case-name";
+      button.innerHTML = `
+        <span class="name">${caso.nombre}</span>
+        <span class="date">${dateText(caso.fecha)}</span>
+        <span class="type">
+          ${TIPOS[caso.tipo] || "No information"}
+        </span>
+      `;
 
-  name.textContent =
-    caso.nombre;
+      section.appendChild(button);
 
+      const saved = positions[caso.id];
 
-  const date =
-    document.createElement("span");
-
-  date.className =
-    "case-date";
-
-  date.textContent =
-    formatDate(caso.fecha);
-
-
-  const type =
-    document.createElement("span");
-
-  type.className =
-    "case-type";
-
-  type.textContent =
-    TIPOS[caso.tipo] ||
-    "No information";
-
-
-  button.append(
-    name,
-    date,
-    type
-  );
-
-
-  section.appendChild(button);
-
-
-  const item = {
-
-    caso,
-
-    button,
-
-    section,
-
-    x: 0,
-
-    y: 0,
-
-    vx:
-      (Math.random() - .5) * 12,
-
-    vy:
-      (Math.random() - .5) * 12,
-
-    dragging: false,
-
-    visible: true
-
-  };
-
-
-  items.push(item);
-
-
-  /* =====================================
-     CLICK
-  ===================================== */
-
-  button.addEventListener(
-    "click",
-    () => {
-
-      if (!item.dragged) {
-        showCase(caso);
-      }
-
-      item.dragged = false;
-
-    }
-  );
-
-
-  /* =====================================
-     HOVER
-  ===================================== */
-
-  button.addEventListener(
-    "pointerenter",
-    event => {
-
-      if (item.dragging) {
-        return;
-      }
-
-      showPreview(
+      const item = {
         caso,
-        event
-      );
+        button,
+        section,
+        x: saved ? saved.x : 60 + Math.random() * 60,
+        y: saved ? saved.y : 130 + Math.random() * 350,
+        dragging:false,
+        moved:false
+      };
 
-    }
-  );
+      items.push(item);
 
+      button.style.left = item.x + "px";
+      button.style.top = item.y + "px";
 
-  button.addEventListener(
-    "pointermove",
-    event => {
+      /* CLICK / DRAG */
 
-      movePreview(event);
+      button.addEventListener("pointerdown",e=>{
 
-    }
-  );
+        if(e.button !== 0) return;
 
+        item.dragging = true;
+        item.moved = false;
 
-  button.addEventListener(
-    "pointerleave",
-    hidePreview
-  );
+        const rect = section.getBoundingClientRect();
 
+        item.offsetX =
+          e.clientX - rect.left - item.x;
 
-  /* =====================================
-     DRAG
-  ===================================== */
+        item.offsetY =
+          e.clientY - rect.top - item.y;
 
-  button.addEventListener(
-    "pointerdown",
-    event => {
+        button.setPointerCapture(e.pointerId);
 
-      if (event.button !== 0) {
-        return;
-      }
+      });
 
-      event.preventDefault();
+      button.addEventListener("pointermove",e=>{
 
-      item.dragging = true;
-      item.dragged = false;
+        if(!item.dragging) return;
 
-      button.setPointerCapture(
-        event.pointerId
-      );
+        item.moved = true;
 
-      const rect =
-        section.getBoundingClientRect();
+        const rect = section.getBoundingClientRect();
 
-      const currentX =
-        item.x;
+        item.x =
+          e.clientX -
+          rect.left -
+          item.offsetX;
 
-      const currentY =
-        item.y;
+        item.y =
+          e.clientY -
+          rect.top -
+          item.offsetY;
 
-      item.dragOffsetX =
-        event.clientX -
-        rect.left -
-        currentX;
-
-      item.dragOffsetY =
-        event.clientY -
-        rect.top -
-        currentY;
-
-      button.style.zIndex = 100;
-
-      hidePreview();
-
-    }
-  );
-
-
-  button.addEventListener(
-    "pointermove",
-    event => {
-
-      if (!item.dragging) {
-        return;
-      }
-
-      item.dragged = true;
-
-      const rect =
-        section.getBoundingClientRect();
-
-      let x =
-        event.clientX -
-        rect.left -
-        item.dragOffsetX;
-
-      let y =
-        event.clientY -
-        rect.top -
-        item.dragOffsetY;
-
-
-      x =
-        Math.max(
+        item.x = Math.max(
           0,
           Math.min(
-            x,
-            section.clientWidth -
-            button.offsetWidth
+            item.x,
+            section.clientWidth - button.offsetWidth
           )
         );
 
-
-      y =
-        Math.max(
+        item.y = Math.max(
           80,
           Math.min(
-            y,
-            section.clientHeight -
-            button.offsetHeight
+            item.y,
+            section.clientHeight - button.offsetHeight
           )
         );
 
+        button.style.left = item.x + "px";
+        button.style.top = item.y + "px";
 
-      item.x = x;
-      item.y = y;
+      });
 
-      renderItem(item);
+      button.addEventListener("pointerup",e=>{
 
-    }
+        item.dragging = false;
+
+        try{
+          button.releasePointerCapture(e.pointerId);
+        }catch{}
+
+        savePositions();
+
+        if(!item.moved){
+          openCase(caso);
+        }
+
+      });
+
+    });
+  });
+
+/* SAVE */
+
+function savePositions(){
+
+  const data = {};
+
+  items.forEach(item=>{
+    data[item.caso.id] = {
+      x:item.x,
+      y:item.y
+    };
+  });
+
+  localStorage.setItem(
+    STORAGE,
+    JSON.stringify(data)
   );
+}
 
+/* RESET */
 
-  button.addEventListener(
-    "pointerup",
-    event => {
+reset.addEventListener("click",()=>{
 
-      if (!item.dragging) {
-        return;
-      }
+  localStorage.removeItem(STORAGE);
 
-      item
+  items.forEach(item=>{
+
+    item.x = 60 + Math.random() * 60;
+    item.y = 130 + Math.random() * 350;
+
+    item.button.style.left = item.x + "px";
+    item.button.style.top = item.y + "px";
+
+  });
+
+});
+
+/* FILTER */
+
+Object.entries(TIPOS).forEach(([key,label])=>{
+
+  const option = document.createElement("option");
+
+  option.value = key;
+  option.textContent = label;
+
+  filter.appendChild(option);
+
+});
+
+function update(){
+
+  const q = clean(search.value);
+  const type = filter.value;
+
+  let visible = 0;
+
+  items.forEach(item=>{
+
+    const c = item.caso;
+
+    const text = clean([
+      c.nombre,
+      c.lugar,
+      c.fecha,
+      c.causa,
+      TIPOS[c.tipo]
+    ].join(" "));
+
+    const show =
+      (!q || text.includes(q)) &&
+      (!type || c.tipo === type);
+
+    item.button.style.display =
+      show ? "" : "none";
+
+    if(show) visible++;
+
+  });
+
+  count.textContent =
+    `${visible} of ${items.length} cases`;
+
+  empty.style.display =
+    visible ? "none" : "flex";
+}
+
+search.addEventListener("input",update);
+filter.addEventListener("change",update);
+
+/* CASE WINDOW */
+
+function openCase(caso){
+
+  const sources =
+    Array.isArray(caso.fuentes)
+      ? caso.fuentes
+      : [];
+
+  card.innerHTML = `
+    <h2>${caso.nombre}</h2>
+
+    <div class="meta">
+      ${dateText(caso.fecha)}
+      ·
+      ${caso.lugar || ""}
+    </div>
+
+    <div class="description">
+      ${caso.texto || caso.causa || "No information available."}
+    </div>
+
+    ${sources.map(url=>`
+      <a
+        href="${url}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >${url}</a>
+    `).join("")}
+  `;
+
+  dialog.showModal();
+}
+
+document
+  .querySelector(".close")
+  .addEventListener("click",()=>dialog.close());
+
+dialog.addEventListener("click",e=>{
+  if(e.target === dialog) dialog.close();
+});
+
+update();
+</script>
+
+</body>
+</html>
