@@ -62,7 +62,7 @@ const CASOS = [
     tipo: "deportacion",
     causa: "Asfixia",
     texto: "Murió por asfixia durante su deportación, bajo custodia policial.",
-    fuentes: ["https://www.elmundo.es/elmundo/2005/08/09/espana/1123591561.html"]
+    fuentes: ["https://www.elperiodicoextremadura.com/sociedad/2007/06/11/nigeriano-murio-iba-deportado-presentaba-45365931.html"]
   },
 
   {
