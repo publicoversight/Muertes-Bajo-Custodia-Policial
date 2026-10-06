@@ -657,54 +657,24 @@ function dateText(date) {
 /* =========================================
    CLUSTERED POSITION
 ========================================= */
-
 function randomPosition() {
-
-  const centerX =
-    map.clientWidth / 2;
-
-  const centerY =
-    1700;
-
-
-  /*
-    The smaller these numbers are,
-    the tighter the cluster.
-
-    Current cluster:
-    approximately 350px wide
-    approximately 500px tall
-  */
+  const centerX = map.clientWidth / 2;
 
   const x =
     centerX +
-    (Math.random() - 0.5) * 350;
+    (Math.random() - 0.5) * 650;
 
   const y =
-    centerY +
-    (Math.random() - 0.5) * 500;
-
+    80 +
+    Math.random() * 500;
 
   return {
-
     x: Math.max(
-      120,
-      Math.min(
-        map.clientWidth - 300,
-        x
-      )
+      40,
+      Math.min(map.clientWidth - 350, x)
     ),
-
-    y: Math.max(
-      120,
-      Math.min(
-        map.offsetHeight - 180,
-        y
-      )
-    )
-
+    y: y
   };
-
 }
 
 
