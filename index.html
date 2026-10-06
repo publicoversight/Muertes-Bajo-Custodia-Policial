@@ -100,7 +100,7 @@ h1 {
 ========================================= */
 
 .controls {
-  position: sticky;
+  : sticky;
   top: 0;
   z-index: 100;
 
@@ -162,7 +162,7 @@ input {
 ========================================= */
 
 #map {
-  position: relative;
+  : relative;
 
   height: 2200px;
 
@@ -190,7 +190,7 @@ input {
 #map::before {
   content: "ARCHIVE";
 
-  position: absolute;
+  : absolute;
 
   left: 50%;
   top: 50%;
@@ -211,7 +211,7 @@ input {
 ========================================= */
 
 .case {
-  position: absolute;
+  : absolute;
 
   border: 0;
   padding: 0;
@@ -355,7 +355,7 @@ dialog::backdrop {
 }
 
 .close {
-  position: absolute;
+  : absolute;
 
   right: 12px;
   top: 8px;
@@ -497,7 +497,7 @@ dialog::backdrop {
     id="reset"
     type="button"
   >
-    Reset positions
+    Reset s
   </button>
 
   <div id="count"></div>
@@ -712,9 +712,7 @@ CASOS.forEach(caso => {
   map.appendChild(button);
 
 
-  const position =
-    saved[caso.id] ||
-    randomPosition();
+const position = randomPosition();
 
 
   const item = {
