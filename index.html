@@ -380,13 +380,7 @@ dialog::backdrop {
     <p>
       This archive brings together cases of people whose deaths
       have been linked to police violence, detention or confinement
-      in Spain.
-      Spanish Government's formal answers concerning deaths under
-      police custody or during police interventions:
-      https://www.congreso.es/entradap/l15p/e11/e_0111420_n_000.pdf 
-      https://www.congreso.es/entradap/l14p/e1/e_0012981_n_000.pdf 
-      https://www.congreso.es/entradap/l14p/e2/e_0027520_n_000.pdf
-      
+      in Spain.      
     </p>
 
     <p>
@@ -596,8 +590,8 @@ function randomPosition() {
   const centerY = 1800;
 
   // Gaussian-ish clustering around the centre
-  const x = centerX + (Math.random() + Math.random() - 1) * 750;
-  const y = centerY + (Math.random() + Math.random() - 1) * 1500;
+  const x = centerX + (Math.random() + Math.random() - 1) * 400;
+  const y = centerY + (Math.random() + Math.random() - 1) * 500;
 
   return {
     x: Math.max(120, Math.min(map.clientWidth - 300, x)),
