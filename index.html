@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Muertes Bajo Custodia Policial en España</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    color: #111;
+    background: white;
+    font-family: Georgia, "Times New Roman", serif;
+  }
+
+  header {
+    max-width: 800px;
+    margin: auto;
+    padding: 35px 20px 20px;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 34px;
+    font-weight: normal;
+    margin: 0 0 20px;
+  }
+
+  .intro {
+    max-width: 680px;
+    margin: auto;
+    font-size: 16px;
+    line-height: 1.6;
+    text-align: left;
+  }
+
+  .intro p {
+    margin: 0 0 12px;
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 25px;
+  }
+
+  input,
+  select,
+  button {
+    font: inherit;
+    font-size: 14px;
+    padding: 7px 10px;
+    border: 1px solid #ccc;
+    background: white;
+  }
+
+  input {
+    width: 280px;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #111;
+    color: white;
+  }
+
+  #count {
+    margin-top: 10px;
+    color: #777;
+    font-size: 13px;
+  }
+
+  #board {
+    position: relative;
+    height: calc(100vh - 430px);
+    min-height: 300px;
+    overflow: hidden;
+    border-top: 1px solid #eee;
+  }
+
+  .name {
+    position: absolute;
+    border: 0;
+    padding: 5px;
+    background: transparent;
+    color: #111;
+    cursor: pointer;
+    font-size: 20px;
+    white-space: nowrap;
+  }
+
+  .name small {
+    display: block;
+    color: #777;
+    font-size: 11px;
+    margin-top: 2px;
+  }
+
+  .name:hover {
+    text-decoration: underline;
+    background: transparent;
+    color: #111;
+  }
+
+  .name.off {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  #empty {
+    display: none;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    color: #777;
+  }
+
+  dialog {
+    width: min(560px, 90vw);
+    border: 1px solid #111;
+    padding: 0;
+    background: white;
+  }
+
+  dialog::backdrop {
+    background: rgba(255,255,255,.9);
+  }
+
+  .card {
+    padding: 30px;
+  }
+
+  .card h2 {
+    margin: 0 0 5px;
+    font-size: 28px;
+    font-weight: normal;
+  }
+
+  .meta,
+  .tipo {
+    color: #777;
+    font-size: 14px;
+  }
+
+  .card .texto {
+    margin: 20px 0;
+    line-height: 1.6;
+  }
+
+  .card a {
+    display: block;
+    margin-top: 10px;
+    color: #111;
+    font-size: 14px;
+  }
+
+  .close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    border: 0;
+    font-size: 25px;
+    color: #777;
+    background: transparent;
+  }
+
+  .close:hover {
+    color: #111;
+    background: transparent;
+  }
+</style>
+</head>
+
+<body>
+
+<header>
+
+
+
+  <div class="intro">
+
+    <p>
+      Este archivo reúne casos de personas cuyas muertes están
+      ligadas a la violencia policial, la detención o el internamiento
+      en España.
+    </p>
+
+    <p>
+      Son casos muy diferentes entre sí. Algunos ocurrieron durante
+      detenciones o bajo custodia; otros están relacionados con
+      intervenciones policiales, centros de internamiento de
+      extranjeros (CIE) o actuaciones de agentes fuera de servicio.
+    </p>
+
+    <p>
+      En algunos casos existen condenas judiciales. En otros, las
+      circunstancias de la muerte siguen siendo discutidas,
+      investigadas o poco documentadas.
+    </p>
+
+  </div>
+
+  <div class="controls">
+
+    <input
+      id="q"
+      type="search"
+      placeholder="Buscar nombre, lugar o año"
+      aria-label="Buscar nombre, lugar o año"
+    >
+
+    <select id="fTipo" aria-label="Filtrar por causa">
+      <option value="">Todas las causas</option>
+    </select>
+
+    <button
+      id="pause"
+      aria-pressed="false"
+    >
+      Pausar
+    </button>
+
+  </div>
+
+  <div id="count" aria-live="polite"></div>
+
+</header>
+
+
+<main id="board">
+
+  <div id="empty">
+    Ningún caso coincide con la búsqueda.
+  </div>
+
+</main>
+
+
+<dialog id="dlg">
+
+  <button
+    class="close"
+    aria-label="Cerrar"
+  >
+    ×
+  </button>
+
+  <div
+    class="card"
+    id="card"
+  ></div>
+
+</dialog>
+
+
+<script src="data.js"></script>
+
+<script>
+
+const board = document.getElementById("board");
+const dialog = document.getElementById("dlg");
+const card = document.getElementById("card");
+
+const search = document.getElementById("q");
+const filterType = document.getElementById("fTipo");
+const pauseButton = document.getElementById("pause");
+
+const count = document.getElementById("count");
+const empty = document.getElementById("empty");
+
+
+/* -------------------------
+   UTILIDADES
+------------------------- */
+
+const normalize = text =>
+  (text || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
+
+const formatDate = date => {
+
+  if (!date || date.length !== 10) {
+    return date || "";
+  }
+
+  return new Date(date + "T00:00").toLocaleDateString(
+    "es-ES",
+    {
+      day: "numeric",
+      month: "long",
+      year: "numeric"
+    }
+  );
+
+};
+
+
+const reducedMotion =
+  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+let paused = reducedMotion;
+
+
+/* -------------------------
+   VENTANA DEL CASO
+------------------------- */
+
+function showCase(caso) {
+
+  card.innerHTML = "";
+
+  const title = document.createElement("h2");
+  title.textContent = caso.nombre;
+
+
+  const meta = document.createElement("p");
+  meta.className = "meta";
+
+  meta.textContent = [
+    caso.fecha && formatDate(caso.fecha),
+    caso.lugar
+  ]
+    .filter(Boolean)
+    .join(" — ");
+
+
+  const type = document.createElement("p");
+  type.className = "tipo";
+
+  type.textContent =
+    "Causa: " +
+    (TIPOS[caso.tipo] || "Sin información");
+
+
+  if (caso.causa) {
+
+    type.textContent +=
+      " · Versión oficial: " +
+      caso.causa;
+
+  }
+
+
+  const text = document.createElement("p");
+  text.className = "texto";
+  text.textContent = caso.texto;
+
+
+  card.append(
+    title,
+    meta,
+    type,
+    text
+  );
+
+
+  /* Fuentes */
+
+  (caso.fuentes || []).forEach(url => {
+
+    const link = document.createElement("a");
+
+    let host = url;
+
+    try {
+      host = new URL(url)
+        .hostname
+        .replace("www.", "");
+    } catch {}
+
+    link.textContent =
+      "Leer fuente: " + host;
+
+    link.href = url;
+    link.target = "_blank";
+    link.rel = "noopener";
+
+    card.appendChild(link);
+
+  });
+
+
+  /* Búsqueda externa */
+
+  const more = document.createElement("a");
+
+  more.textContent =
+    "Buscar más información sobre este caso";
+
+  more.href =
+    "https://duckduckgo.com/?q=" +
+    encodeURIComponent(
+      caso.nombre + " " + caso.lugar + " muerte"
+    );
+
+  more.target = "_blank";
+  more.rel = "noopener";
+
+  card.appendChild(more);
+
+
+  dialog.showModal();
+
+}
+
+
+/* -------------------------
+   CREAR NOMBRES
+------------------------- */
+
+const items = CASOS.map(caso => {
+
+  const button =
+    document.createElement("button");
+
+  button.className = "name";
+  button.textContent = caso.nombre;
+
+
+  const small =
+    document.createElement("small");
+
+  small.textContent =
+    TIPOS[caso.tipo] || "";
+
+
+  button.appendChild(small);
+
+  button.onclick = () =>
+    showCase(caso);
+
+  board.appendChild(button);
+
+
+  const item = {
+    caso,
+    button,
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    hold: false
+  };
+
+
+  const angle =
+    Math.random() * Math.PI * 2;
+
+  const speed =
+    6 + Math.random() * 6;
+
+
+  item.vx =
+    Math.cos(angle) * speed;
+
+  item.vy =
+    Math.sin(angle) * speed;
+
+
+  /* Detener al pasar el cursor */
+
+  button.onpointerenter =
+    button.onfocus = () => {
+      item.hold = true;
+    };
+
+
+  button.onpointerleave =
+    button.onblur = () => {
+      item.hold = false;
+    };
+
+
+  return item;
+
+});
+
+
+/* -------------------------
+   POSICIÓN
+------------------------- */
+
+function place(first = false) {
+
+  const width =
+    board.clientWidth;
+
+  const height =
+    board.clientHeight;
+
+
+  items.forEach(item => {
+
+    item.width =
+      item.button.offsetWidth;
+
+    item.height =
+      item.button.offsetHeight;
+
+
+    if (first) {
+
+      item.x =
+        Math.random() *
+        Math.max(
+          1,
+          width - item.width
+        );
+
+      item.y =
+        Math.random() *
+        Math.max(
+          1,
+          height - item.height
+        );
+
+    }
+
+
+    /* Evita que queden fuera al
+       cambiar el tamaño de pantalla */
+
+    item.x =
+      Math.min(
+        item.x,
+        Math.max(
+          0,
+          width - item.width
+        )
+      );
+
+    item.y =
+      Math.min(
+        item.y,
+        Math.max(
+          0,
+          height - item.height
+        )
+      );
+
+
+    item.button.style.transform =
+      `translate(${item.x}px, ${item.y}px)`;
+
+  });
+
+}
+
+
+/* -------------------------
+   MOVIMIENTO
+------------------------- */
+
+let lastTime = 0;
+
+
+function animate(time) {
+
+  const delta =
+    Math.min(
+      (time - lastTime) / 1000 || 0,
+      0.1
+    );
+
+  lastTime = time;
+
+
+  if (!paused && !dialog.open) {
+
+    const width =
+      board.clientWidth;
+
+    const height =
+      board.clientHeight;
+
+
+    items.forEach(item => {
+
+      if (item.hold) {
+        return;
+      }
+
+
+      item.x +=
+        item.vx * delta;
+
+      item.y +=
+        item.vy * delta;
+
+
+      /* Rebote horizontal */
+
+      if (
+        item.x < 0 ||
+        item.x > width - item.width
+      ) {
+
+        item.vx *= -1;
+
+        item.x =
+          Math.max(
+            0,
+            Math.min(
+              item.x,
+              width - item.width
+            )
+          );
+
+      }
+
+
+      /* Rebote vertical */
+
+      if (
+        item.y < 0 ||
+        item.y > height - item.height
+      ) {
+
+        item.vy *= -1;
+
+        item.y =
+          Math.max(
+            0,
+            Math.min(
+              item.y,
+              height - item.height
+            )
+          );
+
+      }
+
+
+      item.button.style.transform =
+        `translate(${item.x}px, ${item.y}px)`;
+
+    });
+
+  }
+
+
+  requestAnimationFrame(animate);
+
+}
+
+
+/* -------------------------
+   FILTROS
+------------------------- */
+
+Object.entries(TIPOS)
+  .filter(([key]) =>
+    CASOS.some(
+      caso => caso.tipo === key
+    )
+  )
+  .forEach(([key, label]) => {
+
+    filterType.append(
+      new Option(label, key)
+    );
+
+  });
+
+
+function filterCases() {
+
+  const terms =
+    normalize(search.value)
+      .split(/\s+/)
+      .filter(Boolean);
+
+
+  let visible = 0;
+
+
+  items.forEach(item => {
+
+    const caso =
+      item.caso;
+
+
+    /* La búsqueda también mira
+       el texto del caso */
+
+    const text =
+      normalize([
+        caso.nombre,
+        caso.lugar,
+        caso.fecha,
+        caso.texto,
+        TIPOS[caso.tipo]
+      ].join(" "));
+
+
+    const matchesSearch =
+      terms.every(
+        term => text.includes(term)
+      );
+
+
+    const matchesType =
+      !filterType.value ||
+      caso.tipo === filterType.value;
+
+
+    const visibleCase =
+      matchesSearch &&
+      matchesType;
+
+
+    item.button.classList.toggle(
+      "off",
+      !visibleCase
+    );
+
+
+    /* Los casos ocultos no reciben
+       el foco del teclado */
+
+    item.button.tabIndex =
+      visibleCase ? 0 : -1;
+
+
+    if (visibleCase) {
+      visible++;
+    }
+
+  });
+
+
+  empty.style.display =
+    visible ? "none" : "flex";
+
+
+  count.textContent =
+    visible +
+    " de " +
+    items.length +
+    " casos";
+
+}
+
+
+/* -------------------------
+   EVENTOS DE FILTRO
+------------------------- */
+
+search.addEventListener(
+  "input",
+  filterCases
+);
+
+filterType.addEventListener(
+  "change",
+  filterCases
+);
+
+
+/* -------------------------
+   PAUSA
+------------------------- */
+
+function updatePauseButton() {
+
+  pauseButton.textContent =
+    paused
+      ? "Reanudar"
+      : "Pausar";
+
+  pauseButton.setAttribute(
+    "aria-pressed",
+    paused
+  );
+
+}
+
+
+pauseButton.onclick = () => {
+
+  paused = !paused;
+
+  updatePauseButton();
+
+};
+
+
+updatePauseButton();
+
+
+/* -------------------------
+   CERRAR VENTANA
+------------------------- */
+
+document
+  .querySelector(".close")
+  .onclick = () =>
+    dialog.close();
+
+
+dialog.addEventListener(
+  "click",
+  event => {
+
+    if (event.target === dialog) {
+      dialog.close();
+    }
+
+  }
+);
+
+
+/* -------------------------
+   INICIO
+------------------------- */
+
+window.addEventListener(
+  "resize",
+  () => place()
+);
+
+
+place(true);
+filterCases();
+
+requestAnimationFrame(animate);
+
+</script>
+
+</body>
+</html>
