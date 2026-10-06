@@ -7,6 +7,7 @@
 <title>Deaths in Police Custody or during Police Intervention in Spain</title>
 
 <style>
+
 :root {
   --paper: #f7f6f1;
   --ink: #111;
@@ -30,17 +31,17 @@ body {
   font-family: Georgia, "Times New Roman", serif;
 }
 
+
 /* =========================================
    INTRO
 ========================================= */
 
 header {
-  min-height: 0;
-  padding: 42px 5vw 34px;
+  padding: 32px 5vw 25px;
   border-bottom: 1px solid var(--line);
 
   display: grid;
-  grid-template-columns: minmax(260px, 1fr) minmax(300px, 520px);
+  grid-template-columns: minmax(260px, 1fr) minmax(300px, 480px);
   column-gap: 7vw;
   align-items: end;
 }
@@ -48,7 +49,7 @@ header {
 .kicker {
   grid-column: 1 / -1;
 
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 
   font: 10px Arial, sans-serif;
   text-transform: uppercase;
@@ -61,22 +62,22 @@ h1 {
 
   margin: 0;
 
-  font-size: clamp(48px, 6vw, 82px);
+  font-size: clamp(44px, 5.5vw, 75px);
   line-height: .88;
   font-weight: normal;
   letter-spacing: -.055em;
 }
 
 .intro {
-  max-width: 500px;
+  max-width: 480px;
 
-  font-size: 15px;
-  line-height: 1.5;
+  font-size: 14px;
+  line-height: 1.45;
   color: #333;
 }
 
 .intro p {
-  margin: 0 0 10px;
+  margin: 0 0 8px;
 }
 
 .intro p:last-child {
@@ -86,7 +87,7 @@ h1 {
 .scroll-note {
   grid-column: 1 / -1;
 
-  margin-top: 28px;
+  margin-top: 20px;
 
   font: 10px Arial, sans-serif;
   text-transform: uppercase;
@@ -100,7 +101,7 @@ h1 {
 ========================================= */
 
 .controls {
-  : sticky;
+  position: sticky;
   top: 0;
   z-index: 100;
 
@@ -108,7 +109,7 @@ h1 {
   gap: 7px;
   flex-wrap: wrap;
 
-  padding: 10px 5vw;
+  padding: 9px 5vw;
 
   background: rgba(247,246,241,.94);
   backdrop-filter: blur(10px);
@@ -158,13 +159,17 @@ input {
 
 
 /* =========================================
-   MAP / ARCHIVE
+   ARCHIVE FIELD
 ========================================= */
 
 #map {
-  : relative;
+  position: relative;
 
-  height: 2200px;
+  /*
+    The archive is still scrollable,
+    but much more compact than before.
+  */
+  height: 1800px;
 
   overflow: hidden;
 
@@ -185,12 +190,12 @@ input {
 }
 
 
-/* subtle centre mark */
+/* subtle archive marker */
 
 #map::before {
   content: "ARCHIVE";
 
-  : absolute;
+  position: absolute;
 
   left: 50%;
   top: 50%;
@@ -211,7 +216,7 @@ input {
 ========================================= */
 
 .case {
-  : absolute;
+  position: absolute;
 
   border: 0;
   padding: 0;
@@ -355,7 +360,7 @@ dialog::backdrop {
 }
 
 .close {
-  : absolute;
+  position: absolute;
 
   right: 12px;
   top: 8px;
@@ -380,16 +385,16 @@ dialog::backdrop {
   header {
     display: block;
 
-    padding: 30px 20px 24px;
+    padding: 25px 20px 20px;
   }
 
   .kicker {
-    margin-bottom: 18px;
+    margin-bottom: 15px;
   }
 
   h1 {
-    font-size: 48px;
-    margin-bottom: 22px;
+    font-size: 46px;
+    margin-bottom: 20px;
   }
 
   .intro {
@@ -397,11 +402,11 @@ dialog::backdrop {
   }
 
   .scroll-note {
-    margin-top: 22px;
+    margin-top: 18px;
   }
 
   .controls {
-    padding: 9px 12px;
+    padding: 8px 12px;
   }
 
   input {
@@ -414,7 +419,7 @@ dialog::backdrop {
   }
 
   #map {
-    height: 4000px;
+    height: 1800px;
     background-size: 60px 60px;
   }
 
@@ -425,9 +430,12 @@ dialog::backdrop {
   .card {
     padding: 28px;
   }
+
 }
+
 </style>
 </head>
+
 
 <body>
 
@@ -455,14 +463,14 @@ dialog::backdrop {
     </p>
 
     <p>
-      The cases are deliberately not arranged as a chronology.
-      Move through the field and explore the names.
+      The cases are not arranged chronologically.
+      Move the names and explore each case.
     </p>
 
   </div>
 
   <div class="scroll-note">
-    Scroll · drag names · click to open a case
+    Scroll · drag names · click a name
   </div>
 
 </header>
@@ -497,7 +505,7 @@ dialog::backdrop {
     id="reset"
     type="button"
   >
-    Reset s
+    Reset positions
   </button>
 
   <div id="count"></div>
@@ -655,26 +663,59 @@ function dateText(date) {
 
 
 /* =========================================
-   CLUSTERED POSITION
+   INITIAL NAME POSITIONS
 ========================================= */
+
 function randomPosition() {
-  const centerX = map.clientWidth / 2;
+
+  /*
+    Names begin near the top of the archive.
+
+    They are spread across a field rather
+    than forming one tight pile.
+  */
+
+  const paddingX = 60;
+
+  const fieldWidth =
+    map.clientWidth - 120;
+
+  const fieldHeight =
+    900;
+
 
   const x =
-    centerX +
-    (Math.random() - 0.5) * 650;
+    paddingX +
+    Math.random() *
+    fieldWidth;
+
 
   const y =
-    80 +
-    Math.random() * 500;
+    50 +
+    Math.random() *
+    fieldHeight;
+
 
   return {
+
     x: Math.max(
       40,
-      Math.min(map.clientWidth - 350, x)
+      Math.min(
+        map.clientWidth - 350,
+        x
+      )
     ),
-    y: y
+
+    y: Math.max(
+      40,
+      Math.min(
+        map.clientHeight - 180,
+        y
+      )
+    )
+
   };
+
 }
 
 
@@ -712,7 +753,14 @@ CASOS.forEach(caso => {
   map.appendChild(button);
 
 
-const position = randomPosition();
+  /*
+    Use saved position if available.
+    Otherwise generate a new position.
+  */
+
+  const position =
+    saved[caso.id] ||
+    randomPosition();
 
 
   const item = {
@@ -734,12 +782,11 @@ const position = randomPosition();
 
   items.push(item);
 
-
   render(item);
 
 
   /* =====================================
-     DRAG
+     DRAG START
   ===================================== */
 
   button.addEventListener(
@@ -756,25 +803,34 @@ const position = randomPosition();
       const rect =
         map.getBoundingClientRect();
 
+
       item.offsetX =
         event.clientX -
         rect.left -
         item.x;
+
 
       item.offsetY =
         event.clientY -
         rect.top -
         item.y;
 
+
       button.setPointerCapture(
         event.pointerId
       );
 
-      button.style.zIndex = "1000";
+
+      button.style.zIndex =
+        "1000";
 
     }
   );
 
+
+  /* =====================================
+     DRAGGING
+  ===================================== */
 
   button.addEventListener(
     "pointermove",
@@ -784,15 +840,19 @@ const position = randomPosition();
         return;
       }
 
+
       item.moved = true;
+
 
       const rect =
         map.getBoundingClientRect();
+
 
       item.x =
         event.clientX -
         rect.left -
         item.offsetX;
+
 
       item.y =
         event.clientY -
@@ -813,7 +873,7 @@ const position = randomPosition();
 
       item.y =
         Math.max(
-          80,
+          0,
           Math.min(
             item.y,
             map.clientHeight -
@@ -828,6 +888,10 @@ const position = randomPosition();
   );
 
 
+  /* =====================================
+     DRAG END / CLICK
+  ===================================== */
+
   button.addEventListener(
     "pointerup",
     event => {
@@ -836,9 +900,11 @@ const position = randomPosition();
         return;
       }
 
+
       item.dragging = false;
 
       button.style.zIndex = "";
+
 
       try {
 
@@ -851,6 +917,11 @@ const position = randomPosition();
 
       save();
 
+
+      /*
+        If the pointer didn't move,
+        treat it as a click.
+      */
 
       if (!item.moved) {
         openCase(caso);
@@ -897,6 +968,7 @@ function save() {
 
   const positions = {};
 
+
   items.forEach(item => {
 
     positions[item.caso.id] = {
@@ -908,6 +980,7 @@ function save() {
 
   });
 
+
   localStorage.setItem(
     STORAGE,
     JSON.stringify(positions)
@@ -917,7 +990,7 @@ function save() {
 
 
 /* =========================================
-   RESET
+   RESET POSITIONS
 ========================================= */
 
 reset.addEventListener(
@@ -928,17 +1001,24 @@ reset.addEventListener(
       STORAGE
     );
 
+
     items.forEach(item => {
 
-      const p =
+      const position =
         randomPosition();
 
-      item.x = p.x;
-      item.y = p.y;
+
+      item.x =
+        position.x;
+
+      item.y =
+        position.y;
+
 
       render(item);
 
     });
+
 
     save();
 
@@ -956,9 +1036,14 @@ Object.entries(TIPOS).forEach(
     const option =
       document.createElement("option");
 
-    option.value = key;
 
-    option.textContent = label;
+    option.value =
+      key;
+
+
+    option.textContent =
+      label;
+
 
     filter.appendChild(option);
 
@@ -1120,7 +1205,9 @@ dialog.addEventListener(
     if (
       event.target === dialog
     ) {
+
       dialog.close();
+
     }
 
   }
