@@ -1,256 +1,703 @@
+```html
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>Muertes Bajo Custodia Policial en España</title>
+<title>Deaths in Police Custody or during Police Intervention in Spain</title>
 
 <style>
-  * {
-    box-sizing: border-box;
+
+:root {
+  --ink: #111;
+  --muted: #777;
+  --line: #dedede;
+  --paper: #f8f7f3;
+  --card: #fff;
+  --accent: #b3261e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+header {
+  min-height: 100vh;
+  padding: 9vh 6vw 6vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.kicker {
+  font-family: Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+
+h1 {
+  max-width: 900px;
+  font-size: clamp(48px, 8vw, 110px);
+  line-height: .92;
+  font-weight: normal;
+  letter-spacing: -.045em;
+  margin: 0 0 40px;
+}
+
+.intro {
+  max-width: 680px;
+  font-size: 18px;
+  line-height: 1.65;
+}
+
+.intro p {
+  margin: 0 0 18px;
+}
+
+.scroll-note {
+  margin-top: 50px;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.scroll-note span {
+  display: inline-block;
+  margin-left: 8px;
+  animation: arrow 1.5s infinite;
+}
+
+@keyframes arrow {
+  0%, 100% {
+    transform: translateY(0);
   }
 
-  body {
-    margin: 0;
-    color: #111;
-    background: white;
-    font-family: Georgia, "Times New Roman", serif;
+  50% {
+    transform: translateY(5px);
   }
+}
+
+
+/* =========================================
+   CONTROL BAR
+========================================= */
+
+.controls-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(248,247,243,.94);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.controls {
+  max-width: 1500px;
+  margin: auto;
+  padding: 12px 24px;
+
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+input,
+select,
+button {
+  font: inherit;
+}
+
+input,
+select {
+  border: 1px solid #bbb;
+  background: transparent;
+  padding: 9px 12px;
+  color: var(--ink);
+}
+
+input {
+  width: 280px;
+}
+
+button {
+  cursor: pointer;
+}
+
+.control-button {
+  border: 1px solid #bbb;
+  background: transparent;
+  padding: 9px 12px;
+}
+
+.control-button:hover {
+  background: var(--ink);
+  color: white;
+}
+
+#count {
+  margin-left: auto;
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+
+/* =========================================
+   ARCHIVE
+========================================= */
+
+#archive {
+  position: relative;
+}
+
+.year-section {
+  position: relative;
+  min-height: 650px;
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.year-label {
+  position: absolute;
+  left: 24px;
+  top: 28px;
+
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+
+  letter-spacing: .12em;
+  text-transform: uppercase;
+
+  z-index: 5;
+}
+
+.year-label strong {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: clamp(50px, 8vw, 110px);
+  line-height: .8;
+  font-weight: normal;
+  color: #d5d3cc;
+  letter-spacing: -.05em;
+}
+
+
+/* =========================================
+   CASE NAME
+========================================= */
+
+.case {
+  position: absolute;
+
+  border: 0;
+  padding: 0;
+
+  background: transparent;
+  color: var(--ink);
+
+  text-align: left;
+
+  cursor: grab;
+
+  transition:
+    opacity .25s ease,
+    transform .18s ease;
+}
+
+.case:active {
+  cursor: grabbing;
+}
+
+.case:hover {
+  z-index: 20;
+}
+
+.case-name {
+  display: block;
+
+  font-size: clamp(18px, 2vw, 27px);
+  line-height: 1;
+
+  white-space: nowrap;
+
+  border-bottom: 1px solid transparent;
+}
+
+.case:hover .case-name {
+  border-bottom-color: var(--ink);
+}
+
+.case-date {
+  display: block;
+
+  margin-top: 6px;
+
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+  color: var(--muted);
+
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.case-type {
+  display: block;
+
+  margin-top: 3px;
+
+  font-family: Arial, sans-serif;
+  font-size: 10px;
+
+  color: var(--muted);
+}
+
+.case::after {
+  content: "";
+
+  position: absolute;
+
+  left: -8px;
+  top: -8px;
+
+  width: calc(100% + 16px);
+  height: calc(100% + 16px);
+
+  background: rgba(255,255,255,.92);
+
+  z-index: -1;
+
+  opacity: 0;
+
+  transition: opacity .2s;
+}
+
+.case:hover::after {
+  opacity: 1;
+}
+
+
+/* =========================================
+   HOVER PREVIEW
+========================================= */
+
+.preview {
+  position: fixed;
+
+  width: min(390px, calc(100vw - 40px));
+
+  padding: 20px;
+
+  background: var(--card);
+
+  border: 1px solid var(--ink);
+
+  pointer-events: none;
+
+  opacity: 0;
+
+  transform: translateY(8px);
+
+  transition:
+    opacity .15s ease,
+    transform .15s ease;
+
+  z-index: 100;
+
+  box-shadow: 8px 8px 0 rgba(0,0,0,.06);
+}
+
+.preview.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.preview h3 {
+  margin: 0 0 5px;
+  font-size: 24px;
+  font-weight: normal;
+}
+
+.preview .preview-meta {
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
+.preview p {
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 14px 0 0;
+}
+
+
+/* =========================================
+   HIDDEN CASE
+========================================= */
+
+.case.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+
+/* =========================================
+   EMPTY
+========================================= */
+
+#empty {
+  display: none;
+
+  min-height: 500px;
+
+  align-items: center;
+  justify-content: center;
+
+  font-family: Arial, sans-serif;
+  color: var(--muted);
+}
+
+
+/* =========================================
+   DIALOG
+========================================= */
+
+dialog {
+  width: min(650px, 92vw);
+
+  max-height: 88vh;
+
+  border: 1px solid var(--ink);
+
+  padding: 0;
+
+  background: var(--card);
+
+  box-shadow:
+    15px 15px 0 rgba(0,0,0,.08);
+}
+
+dialog::backdrop {
+  background: rgba(0,0,0,.35);
+  backdrop-filter: blur(4px);
+}
+
+.card {
+  padding: clamp(25px, 5vw, 50px);
+}
+
+.card h2 {
+  margin: 0 0 8px;
+
+  font-size: clamp(32px, 5vw, 52px);
+
+  font-weight: normal;
+
+  line-height: .95;
+}
+
+.meta {
+  font-family: Arial, sans-serif;
+
+  font-size: 11px;
+
+  color: var(--muted);
+
+  text-transform: uppercase;
+
+  letter-spacing: .06em;
+}
+
+.tipo {
+  margin-top: 20px;
+
+  padding-top: 15px;
+
+  border-top: 1px solid var(--line);
+
+  font-family: Arial, sans-serif;
+
+  font-size: 12px;
+
+  color: var(--muted);
+}
+
+.card .texto {
+  margin: 25px 0;
+
+  font-size: 17px;
+
+  line-height: 1.65;
+}
+
+.card a {
+  display: block;
+
+  margin-top: 12px;
+
+  color: var(--ink);
+
+  font-family: Arial, sans-serif;
+
+  font-size: 12px;
+}
+
+.close {
+  position: absolute;
+
+  right: 15px;
+  top: 10px;
+
+  border: 0;
+
+  background: transparent;
+
+  font-size: 28px;
+
+  color: var(--muted);
+}
+
+.close:hover {
+  color: var(--ink);
+}
+
+
+/* =========================================
+   FOOTER
+========================================= */
+
+footer {
+  padding: 80px 24px;
+
+  border-top: 1px solid var(--line);
+
+  text-align: center;
+
+  font-family: Arial, sans-serif;
+
+  font-size: 11px;
+
+  color: var(--muted);
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 700px) {
 
   header {
-    max-width: 800px;
-    margin: auto;
-    padding: 35px 20px 20px;
-    text-align: center;
+    min-height: auto;
+    padding: 70px 22px 55px;
   }
 
   h1 {
-    font-size: 34px;
-    font-weight: normal;
-    margin: 0 0 20px;
+    font-size: 54px;
   }
 
   .intro {
-    max-width: 680px;
-    margin: auto;
     font-size: 16px;
-    line-height: 1.6;
-    text-align: left;
-  }
-
-  .intro p {
-    margin: 0 0 12px;
   }
 
   .controls {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 25px;
-  }
-
-  input,
-  select,
-  button {
-    font: inherit;
-    font-size: 14px;
-    padding: 7px 10px;
-    border: 1px solid #ccc;
-    background: white;
+    padding: 10px 14px;
   }
 
   input {
-    width: 280px;
-  }
-
-  button {
-    cursor: pointer;
-  }
-
-  button:hover {
-    background: #111;
-    color: white;
+    width: 100%;
   }
 
   #count {
-    margin-top: 10px;
-    color: #777;
-    font-size: 13px;
+    margin-left: 0;
+    width: 100%;
   }
 
-  #board {
-    position: relative;
-    height: calc(100vh - 430px);
-    min-height: 300px;
-    overflow: hidden;
-    border-top: 1px solid #eee;
+  .year-section {
+    min-height: 850px;
   }
 
-  .name {
-    position: absolute;
-    border: 0;
-    padding: 5px;
-    background: transparent;
-    color: #111;
-    cursor: pointer;
-    font-size: 20px;
-    white-space: nowrap;
+  .year-label {
+    left: 14px;
   }
 
-  .name small {
-    display: block;
-    color: #777;
-    font-size: 11px;
-    margin-top: 2px;
+  .case-name {
+    font-size: 18px;
   }
 
-  .name:hover {
-    text-decoration: underline;
-    background: transparent;
-    color: #111;
+}
+
+
+/* =========================================
+   REDUCED MOTION
+========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+  html {
+    scroll-behavior: auto;
   }
 
-  .name.off {
-    visibility: hidden;
-    pointer-events: none;
+  .scroll-note span {
+    animation: none;
   }
 
-  #empty {
-    display: none;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-    color: #777;
-  }
+}
 
-  dialog {
-    width: min(560px, 90vw);
-    border: 1px solid #111;
-    padding: 0;
-    background: white;
-  }
-
-  dialog::backdrop {
-    background: rgba(255,255,255,.9);
-  }
-
-  .card {
-    padding: 30px;
-  }
-
-  .card h2 {
-    margin: 0 0 5px;
-    font-size: 28px;
-    font-weight: normal;
-  }
-
-  .meta,
-  .tipo {
-    color: #777;
-    font-size: 14px;
-  }
-
-  .card .texto {
-    margin: 20px 0;
-    line-height: 1.6;
-  }
-
-  .card a {
-    display: block;
-    margin-top: 10px;
-    color: #111;
-    font-size: 14px;
-  }
-
-  .close {
-    position: absolute;
-    top: 8px;
-    right: 12px;
-    border: 0;
-    font-size: 25px;
-    color: #777;
-    background: transparent;
-  }
-
-  .close:hover {
-    color: #111;
-    background: transparent;
-  }
 </style>
 </head>
 
+
 <body>
+
 
 <header>
 
+  <div class="kicker">
+    Interactive archive · Spain
+  </div>
 
+  <h1>
+    Deaths under<br>
+    police custody
+  </h1>
 
   <div class="intro">
 
     <p>
-      Este archivo reúne casos de personas cuyas muertes están
-      ligadas a la violencia policial, la detención o el internamiento
-      en España.
+      This archive brings together cases of people whose deaths
+      have been linked to police violence, detention or confinement
+      in Spain.
     </p>
 
     <p>
-      Son casos muy diferentes entre sí. Algunos ocurrieron durante
-      detenciones o bajo custodia; otros están relacionados con
-      intervenciones policiales, centros de internamiento de
-      extranjeros (CIE) o actuaciones de agentes fuera de servicio.
+      The cases differ substantially. Some occurred during arrests
+      or while people were in custody; others are connected with
+      police interventions, immigration detention centres (CIEs),
+      deportations or actions involving officers off duty.
     </p>
 
     <p>
-      En algunos casos existen condenas judiciales. En otros, las
-      circunstancias de la muerte siguen siendo discutidas,
-      investigadas o poco documentadas.
+      Some cases resulted in judicial convictions. In others,
+      the circumstances remain disputed, under investigation,
+      or incompletely documented.
     </p>
 
   </div>
+
+  <div class="scroll-note">
+    Scroll through the archive
+    <span>↓</span>
+  </div>
+
+</header>
+
+
+<!-- ======================================
+     CONTROLS
+======================================= -->
+
+<div class="controls-wrap">
 
   <div class="controls">
 
     <input
       id="q"
       type="search"
-      placeholder="Buscar nombre, lugar o año"
-      aria-label="Buscar nombre, lugar o año"
+      placeholder="Search name, place or year"
+      aria-label="Search"
     >
 
-    <select id="fTipo" aria-label="Filtrar por causa">
-      <option value="">Todas las causas</option>
+    <select
+      id="fTipo"
+      aria-label="Filter by type"
+    >
+      <option value="">
+        All categories
+      </option>
     </select>
 
     <button
+      class="control-button"
       id="pause"
       aria-pressed="false"
     >
-      Pausar
+      Pause movement
     </button>
+
+    <button
+      class="control-button"
+      id="reset"
+    >
+      Reset positions
+    </button>
+
+    <div id="count"></div>
 
   </div>
 
-  <div id="count" aria-live="polite"></div>
-
-</header>
+</div>
 
 
-<main id="board">
+<!-- ======================================
+     ARCHIVE
+======================================= -->
+
+<main id="archive">
 
   <div id="empty">
-    Ningún caso coincide con la búsqueda.
+    No cases match your search.
   </div>
 
 </main>
 
 
+<!-- ======================================
+     HOVER PREVIEW
+======================================= -->
+
+<div
+  class="preview"
+  id="preview"
+  aria-hidden="true"
+></div>
+
+
+<!-- ======================================
+     DIALOG
+======================================= -->
+
 <dialog id="dlg">
 
   <button
     class="close"
-    aria-label="Cerrar"
+    aria-label="Close"
   >
     ×
   </button>
@@ -263,25 +710,54 @@
 </dialog>
 
 
+<footer>
+  Interactive archive · Sources are provided with each case
+</footer>
+
+
 <script src="data.js"></script>
 
 <script>
 
-const board = document.getElementById("board");
-const dialog = document.getElementById("dlg");
-const card = document.getElementById("card");
 
-const search = document.getElementById("q");
-const filterType = document.getElementById("fTipo");
-const pauseButton = document.getElementById("pause");
+/* =========================================
+   ELEMENTS
+========================================= */
 
-const count = document.getElementById("count");
-const empty = document.getElementById("empty");
+const archive =
+  document.getElementById("archive");
+
+const dialog =
+  document.getElementById("dlg");
+
+const card =
+  document.getElementById("card");
+
+const preview =
+  document.getElementById("preview");
+
+const search =
+  document.getElementById("q");
+
+const filterType =
+  document.getElementById("fTipo");
+
+const pauseButton =
+  document.getElementById("pause");
+
+const resetButton =
+  document.getElementById("reset");
+
+const count =
+  document.getElementById("count");
+
+const empty =
+  document.getElementById("empty");
 
 
-/* -------------------------
-   UTILIDADES
-------------------------- */
+/* =========================================
+   UTILITIES
+========================================= */
 
 const normalize = text =>
   (text || "")
@@ -290,554 +766,428 @@ const normalize = text =>
     .toLowerCase();
 
 
-const formatDate = date => {
+function formatDate(date) {
 
   if (!date || date.length !== 10) {
     return date || "";
   }
 
-  return new Date(date + "T00:00").toLocaleDateString(
-    "es-ES",
-    {
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    }
-  );
-
-};
-
-
-const reducedMotion =
-  window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-let paused = reducedMotion;
-
-
-/* -------------------------
-   VENTANA DEL CASO
-------------------------- */
-
-function showCase(caso) {
-
-  card.innerHTML = "";
-
-  const title = document.createElement("h2");
-  title.textContent = caso.nombre;
-
-
-  const meta = document.createElement("p");
-  meta.className = "meta";
-
-  meta.textContent = [
-    caso.fecha && formatDate(caso.fecha),
-    caso.lugar
-  ]
-    .filter(Boolean)
-    .join(" — ");
-
-
-  const type = document.createElement("p");
-  type.className = "tipo";
-
-  type.textContent =
-    "Causa: " +
-    (TIPOS[caso.tipo] || "Sin información");
-
-
-  if (caso.causa) {
-
-    type.textContent +=
-      " · Versión oficial: " +
-      caso.causa;
-
-  }
-
-
-  const text = document.createElement("p");
-  text.className = "texto";
-  text.textContent = caso.texto;
-
-
-  card.append(
-    title,
-    meta,
-    type,
-    text
-  );
-
-
-  /* Fuentes */
-
-  (caso.fuentes || []).forEach(url => {
-
-    const link = document.createElement("a");
-
-    let host = url;
-
-    try {
-      host = new URL(url)
-        .hostname
-        .replace("www.", "");
-    } catch {}
-
-    link.textContent =
-      "Leer fuente: " + host;
-
-    link.href = url;
-    link.target = "_blank";
-    link.rel = "noopener";
-
-    card.appendChild(link);
-
-  });
-
-
-  /* Búsqueda externa */
-
-  const more = document.createElement("a");
-
-  more.textContent =
-    "Buscar más información sobre este caso";
-
-  more.href =
-    "https://duckduckgo.com/?q=" +
-    encodeURIComponent(
-      caso.nombre + " " + caso.lugar + " muerte"
+  return new Date(date + "T00:00")
+    .toLocaleDateString(
+      "en-GB",
+      {
+        day: "numeric",
+        month: "long",
+        year: "numeric"
+      }
     );
-
-  more.target = "_blank";
-  more.rel = "noopener";
-
-  card.appendChild(more);
-
-
-  dialog.showModal();
-
 }
 
 
-/* -------------------------
-   CREAR NOMBRES
-------------------------- */
+/* =========================================
+   GROUP CASES BY YEAR
+========================================= */
 
-const items = CASOS.map(caso => {
+const grouped = {};
 
-  const button =
-    document.createElement("button");
+CASOS.forEach(caso => {
 
-  button.className = "name";
-  button.textContent = caso.nombre;
+  const year =
+    caso.fecha
+      ? caso.fecha.slice(0, 4)
+      : "Unknown";
 
+  if (!grouped[year]) {
+    grouped[year] = [];
+  }
 
-  const small =
-    document.createElement("small");
-
-  small.textContent =
-    TIPOS[caso.tipo] || "";
-
-
-  button.appendChild(small);
-
-  button.onclick = () =>
-    showCase(caso);
-
-  board.appendChild(button);
-
-
-  const item = {
-    caso,
-    button,
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-    hold: false
-  };
-
-
-  const angle =
-    Math.random() * Math.PI * 2;
-
-  const speed =
-    6 + Math.random() * 6;
-
-
-  item.vx =
-    Math.cos(angle) * speed;
-
-  item.vy =
-    Math.sin(angle) * speed;
-
-
-  /* Detener al pasar el cursor */
-
-  button.onpointerenter =
-    button.onfocus = () => {
-      item.hold = true;
-    };
-
-
-  button.onpointerleave =
-    button.onblur = () => {
-      item.hold = false;
-    };
-
-
-  return item;
+  grouped[year].push(caso);
 
 });
 
 
-/* -------------------------
-   POSICIÓN
-------------------------- */
+const years =
+  Object.keys(grouped)
+    .sort((a, b) => {
 
-function place(first = false) {
+      if (a === "Unknown") return 1;
+      if (b === "Unknown") return -1;
 
-  const width =
-    board.clientWidth;
-
-  const height =
-    board.clientHeight;
-
-
-  items.forEach(item => {
-
-    item.width =
-      item.button.offsetWidth;
-
-    item.height =
-      item.button.offsetHeight;
-
-
-    if (first) {
-
-      item.x =
-        Math.random() *
-        Math.max(
-          1,
-          width - item.width
-        );
-
-      item.y =
-        Math.random() *
-        Math.max(
-          1,
-          height - item.height
-        );
-
-    }
-
-
-    /* Evita que queden fuera al
-       cambiar el tamaño de pantalla */
-
-    item.x =
-      Math.min(
-        item.x,
-        Math.max(
-          0,
-          width - item.width
-        )
-      );
-
-    item.y =
-      Math.min(
-        item.y,
-        Math.max(
-          0,
-          height - item.height
-        )
-      );
-
-
-    item.button.style.transform =
-      `translate(${item.x}px, ${item.y}px)`;
-
-  });
-
-}
-
-
-/* -------------------------
-   MOVIMIENTO
-------------------------- */
-
-let lastTime = 0;
-
-
-function animate(time) {
-
-  const delta =
-    Math.min(
-      (time - lastTime) / 1000 || 0,
-      0.1
-    );
-
-  lastTime = time;
-
-
-  if (!paused && !dialog.open) {
-
-    const width =
-      board.clientWidth;
-
-    const height =
-      board.clientHeight;
-
-
-    items.forEach(item => {
-
-      if (item.hold) {
-        return;
-      }
-
-
-      item.x +=
-        item.vx * delta;
-
-      item.y +=
-        item.vy * delta;
-
-
-      /* Rebote horizontal */
-
-      if (
-        item.x < 0 ||
-        item.x > width - item.width
-      ) {
-
-        item.vx *= -1;
-
-        item.x =
-          Math.max(
-            0,
-            Math.min(
-              item.x,
-              width - item.width
-            )
-          );
-
-      }
-
-
-      /* Rebote vertical */
-
-      if (
-        item.y < 0 ||
-        item.y > height - item.height
-      ) {
-
-        item.vy *= -1;
-
-        item.y =
-          Math.max(
-            0,
-            Math.min(
-              item.y,
-              height - item.height
-            )
-          );
-
-      }
-
-
-      item.button.style.transform =
-        `translate(${item.x}px, ${item.y}px)`;
+      return Number(a) - Number(b);
 
     });
 
-  }
+
+/* =========================================
+   CREATE YEAR SECTIONS
+========================================= */
+
+const sections = {};
+
+years.forEach(year => {
+
+  const section =
+    document.createElement("section");
+
+  section.className =
+    "year-section";
+
+  section.dataset.year = year;
 
 
-  requestAnimationFrame(animate);
+  const label =
+    document.createElement("div");
 
-}
+  label.className =
+    "year-label";
 
-
-/* -------------------------
-   FILTROS
-------------------------- */
-
-Object.entries(TIPOS)
-  .filter(([key]) =>
-    CASOS.some(
-      caso => caso.tipo === key
-    )
-  )
-  .forEach(([key, label]) => {
-
-    filterType.append(
-      new Option(label, key)
-    );
-
-  });
+  label.innerHTML = `
+    <strong>${year}</strong>
+    archive
+  `;
 
 
-function filterCases() {
+  section.appendChild(label);
 
-  const terms =
-    normalize(search.value)
-      .split(/\s+/)
-      .filter(Boolean);
+  archive.appendChild(section);
 
+  sections[year] = section;
 
-  let visible = 0;
+});
 
 
-  items.forEach(item => {
+/* =========================================
+   CASE OBJECTS
+========================================= */
 
-    const caso =
-      item.caso;
-
-
-    /* La búsqueda también mira
-       el texto del caso */
-
-    const text =
-      normalize([
-        caso.nombre,
-        caso.lugar,
-        caso.fecha,
-        caso.texto,
-        TIPOS[caso.tipo]
-      ].join(" "));
+const items = [];
 
 
-    const matchesSearch =
-      terms.every(
-        term => text.includes(term)
-      );
+/* =========================================
+   SAVED POSITIONS
+========================================= */
+
+const STORAGE_KEY =
+  "spain-police-deaths-positions-v2";
 
 
-    const matchesType =
-      !filterType.value ||
-      caso.tipo === filterType.value;
+let savedPositions = {};
 
+try {
 
-    const visibleCase =
-      matchesSearch &&
-      matchesType;
+  savedPositions =
+    JSON.parse(
+      localStorage.getItem(STORAGE_KEY)
+    ) || {};
 
+} catch {
 
-    item.button.classList.toggle(
-      "off",
-      !visibleCase
-    );
-
-
-    /* Los casos ocultos no reciben
-       el foco del teclado */
-
-    item.button.tabIndex =
-      visibleCase ? 0 : -1;
-
-
-    if (visibleCase) {
-      visible++;
-    }
-
-  });
-
-
-  empty.style.display =
-    visible ? "none" : "flex";
-
-
-  count.textContent =
-    visible +
-    " de " +
-    items.length +
-    " casos";
+  savedPositions = {};
 
 }
 
 
-/* -------------------------
-   EVENTOS DE FILTRO
-------------------------- */
+/* =========================================
+   RANDOM POSITION
+========================================= */
 
-search.addEventListener(
-  "input",
-  filterCases
-);
+function randomPosition(section, element) {
 
-filterType.addEventListener(
-  "change",
-  filterCases
-);
+  const padding = 50;
+
+  const width =
+    section.clientWidth;
+
+  const height =
+    section.clientHeight;
+
+  const maxX =
+    Math.max(
+      padding,
+      width - element.offsetWidth - padding
+    );
+
+  const maxY =
+    Math.max(
+      100,
+      height - element.offsetHeight - padding
+    );
+
+  return {
+
+    x:
+      padding +
+      Math.random() *
+      Math.max(1, maxX - padding),
+
+    y:
+      100 +
+      Math.random() *
+      Math.max(1, maxY - 100)
+
+  };
+
+}
 
 
-/* -------------------------
-   PAUSA
-------------------------- */
+/* =========================================
+   CREATE CASES
+========================================= */
 
-function updatePauseButton() {
+CASOS.forEach((caso, index) => {
 
-  pauseButton.textContent =
-    paused
-      ? "Reanudar"
-      : "Pausar";
+  const year =
+    caso.fecha
+      ? caso.fecha.slice(0, 4)
+      : "Unknown";
 
-  pauseButton.setAttribute(
-    "aria-pressed",
-    paused
+  const section =
+    sections[year];
+
+
+  const button =
+    document.createElement("button");
+
+  button.className =
+    "case";
+
+  button.type =
+    "button";
+
+
+  const name =
+    document.createElement("span");
+
+  name.className =
+    "case-name";
+
+  name.textContent =
+    caso.nombre;
+
+
+  const date =
+    document.createElement("span");
+
+  date.className =
+    "case-date";
+
+  date.textContent =
+    formatDate(caso.fecha);
+
+
+  const type =
+    document.createElement("span");
+
+  type.className =
+    "case-type";
+
+  type.textContent =
+    TIPOS[caso.tipo] ||
+    "No information";
+
+
+  button.append(
+    name,
+    date,
+    type
   );
 
-}
+
+  section.appendChild(button);
 
 
-pauseButton.onclick = () => {
+  const item = {
 
-  paused = !paused;
+    caso,
 
-  updatePauseButton();
+    button,
 
-};
+    section,
+
+    x: 0,
+
+    y: 0,
+
+    vx:
+      (Math.random() - .5) * 12,
+
+    vy:
+      (Math.random() - .5) * 12,
+
+    dragging: false,
+
+    visible: true
+
+  };
 
 
-updatePauseButton();
+  items.push(item);
 
 
-/* -------------------------
-   CERRAR VENTANA
-------------------------- */
+  /* =====================================
+     CLICK
+  ===================================== */
 
-document
-  .querySelector(".close")
-  .onclick = () =>
-    dialog.close();
+  button.addEventListener(
+    "click",
+    () => {
 
+      if (!item.dragged) {
+        showCase(caso);
+      }
 
-dialog.addEventListener(
-  "click",
-  event => {
+      item.dragged = false;
 
-    if (event.target === dialog) {
-      dialog.close();
     }
-
-  }
-);
+  );
 
 
-/* -------------------------
-   INICIO
-------------------------- */
+  /* =====================================
+     HOVER
+  ===================================== */
 
-window.addEventListener(
-  "resize",
-  () => place()
-);
+  button.addEventListener(
+    "pointerenter",
+    event => {
+
+      if (item.dragging) {
+        return;
+      }
+
+      showPreview(
+        caso,
+        event
+      );
+
+    }
+  );
 
 
-place(true);
-filterCases();
+  button.addEventListener(
+    "pointermove",
+    event => {
 
-requestAnimationFrame(animate);
+      movePreview(event);
 
-</script>
+    }
+  );
 
-</body>
-</html>
+
+  button.addEventListener(
+    "pointerleave",
+    hidePreview
+  );
+
+
+  /* =====================================
+     DRAG
+  ===================================== */
+
+  button.addEventListener(
+    "pointerdown",
+    event => {
+
+      if (event.button !== 0) {
+        return;
+      }
+
+      event.preventDefault();
+
+      item.dragging = true;
+      item.dragged = false;
+
+      button.setPointerCapture(
+        event.pointerId
+      );
+
+      const rect =
+        section.getBoundingClientRect();
+
+      const currentX =
+        item.x;
+
+      const currentY =
+        item.y;
+
+      item.dragOffsetX =
+        event.clientX -
+        rect.left -
+        currentX;
+
+      item.dragOffsetY =
+        event.clientY -
+        rect.top -
+        currentY;
+
+      button.style.zIndex = 100;
+
+      hidePreview();
+
+    }
+  );
+
+
+  button.addEventListener(
+    "pointermove",
+    event => {
+
+      if (!item.dragging) {
+        return;
+      }
+
+      item.dragged = true;
+
+      const rect =
+        section.getBoundingClientRect();
+
+      let x =
+        event.clientX -
+        rect.left -
+        item.dragOffsetX;
+
+      let y =
+        event.clientY -
+        rect.top -
+        item.dragOffsetY;
+
+
+      x =
+        Math.max(
+          0,
+          Math.min(
+            x,
+            section.clientWidth -
+            button.offsetWidth
+          )
+        );
+
+
+      y =
+        Math.max(
+          80,
+          Math.min(
+            y,
+            section.clientHeight -
+            button.offsetHeight
+          )
+        );
+
+
+      item.x = x;
+      item.y = y;
+
+      renderItem(item);
+
+    }
+  );
+
+
+  button.addEventListener(
+    "pointerup",
+    event => {
+
+      if (!item.dragging) {
+        return;
+      }
+
+      item
