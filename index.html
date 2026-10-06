@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,6 +81,8 @@
 
     #search,
     #category,
+    #year,
+    #place,
     #reset {
       height: 36px;
       border: 1px solid #111;
@@ -94,6 +97,11 @@
 
     #category {
       min-width: 190px;
+    }
+
+    #year,
+    #place {
+      min-width: 130px;
     }
 
     #reset {
@@ -332,7 +340,9 @@
         width: 100%;
       }
 
-      #category {
+      #category,
+      #year,
+      #place {
         flex: 1;
         min-width: 0;
       }
@@ -397,6 +407,14 @@
 
     <select id="category">
       <option value="all">All cases</option>
+    </select>
+
+    <select id="year">
+      <option value="all">All years</option>
+    </select>
+
+    <select id="place">
+      <option value="all">All places</option>
     </select>
 
     <button id="reset">
@@ -490,6 +508,12 @@
     const category =
       document.getElementById("category");
 
+    const year =
+      document.getElementById("year");
+
+    const place =
+      document.getElementById("place");
+
     const reset =
       document.getElementById("reset");
 
@@ -535,6 +559,67 @@
 
       }
     );
+
+
+    /* -------------------------
+       YEARS
+    ------------------------- */
+
+    const years =
+      [...new Set(
+        CASOS
+          .map(caso => {
+            const match =
+              String(caso.fecha || "").match(/\b(19|20)\d{2}\b/);
+
+            return match
+              ? match[0]
+              : null;
+          })
+          .filter(Boolean)
+      )].sort((a, b) => b - a);
+
+
+    years.forEach((value) => {
+
+      const option =
+        document.createElement("option");
+
+      option.value = value;
+      option.textContent = value;
+
+      year.appendChild(option);
+
+    });
+
+
+    /* -------------------------
+       PLACES
+    ------------------------- */
+
+    const places =
+      [...new Set(
+        CASOS
+          .map(caso =>
+            String(caso.lugar || "").trim()
+          )
+          .filter(Boolean)
+      )].sort((a, b) =>
+        a.localeCompare(b, "es")
+      );
+
+
+    places.forEach((value) => {
+
+      const option =
+        document.createElement("option");
+
+      option.value = value;
+      option.textContent = value;
+
+      place.appendChild(option);
+
+    });
 
 
     /* -------------------------
@@ -869,6 +954,12 @@
       const type =
         category.value;
 
+      const selectedYear =
+        year.value;
+
+      const selectedPlace =
+        place.value;
+
       let visible = 0;
 
 
@@ -885,9 +976,33 @@
             type === "all" ||
             caso.tipo === type;
 
+
+          const caseYearMatch =
+            String(caso.fecha || "")
+              .match(/\b(19|20)\d{2}\b/);
+
+          const caseYear =
+            caseYearMatch
+              ? caseYearMatch[0]
+              : "";
+
+
+          const matchesYear =
+            selectedYear === "all" ||
+            caseYear === selectedYear;
+
+
+          const matchesPlace =
+            selectedPlace === "all" ||
+            String(caso.lugar || "").trim() === selectedPlace;
+
+
           const visibleCase =
             matchesName &&
-            matchesType;
+            matchesType &&
+            matchesYear &&
+            matchesPlace;
+
 
           name.classList.toggle(
             "hidden",
@@ -914,6 +1029,16 @@
     );
 
     category.addEventListener(
+      "change",
+      filterCases
+    );
+
+    year.addEventListener(
+      "change",
+      filterCases
+    );
+
+    place.addEventListener(
       "change",
       filterCases
     );
@@ -972,3 +1097,4 @@
 
 </body>
 </html>
+```
