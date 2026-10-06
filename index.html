@@ -585,42 +585,19 @@ function dateText(date) {
    RANDOM POSITION
 ========================================= */
 
-function randomPosition(button) {
+function randomPosition() {
+  const centerX = map.clientWidth / 2;
+  const centerY = 1800;
 
-  const margin = 60;
-
-  const maxX =
-    Math.max(
-      margin,
-      map.clientWidth -
-      button.offsetWidth -
-      margin
-    );
-
-  const maxY =
-    Math.max(
-      150,
-      map.clientHeight -
-      button.offsetHeight -
-      margin
-    );
+  // Gaussian-ish clustering around the centre
+  const x = centerX + (Math.random() + Math.random() - 1) * 750;
+  const y = centerY + (Math.random() + Math.random() - 1) * 1500;
 
   return {
-
-    x:
-      margin +
-      Math.random() *
-      Math.max(1, maxX - margin),
-
-    y:
-      120 +
-      Math.random() *
-      Math.max(1, maxY - 120)
-
+    x: Math.max(120, Math.min(map.clientWidth - 300, x)),
+    y: Math.max(120, Math.min(map.offsetHeight - 180, y))
   };
-
 }
-
 
 /* =========================================
    CREATE NAMES
