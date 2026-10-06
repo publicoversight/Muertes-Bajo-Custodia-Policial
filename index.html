@@ -30,64 +30,89 @@ body {
   font-family: Georgia, "Times New Roman", serif;
 }
 
-/* INTRO */
+/* =========================================
+   INTRO
+========================================= */
 
 header {
-  min-height: 90vh;
-  padding: 8vw 6vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  min-height: 0;
+  padding: 42px 5vw 34px;
   border-bottom: 1px solid var(--line);
+
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(300px, 520px);
+  column-gap: 7vw;
+  align-items: end;
 }
 
 .kicker {
-  font: 11px Arial, sans-serif;
+  grid-column: 1 / -1;
+
+  margin-bottom: 24px;
+
+  font: 10px Arial, sans-serif;
   text-transform: uppercase;
-  letter-spacing: .15em;
+  letter-spacing: .16em;
   color: var(--muted);
-  margin-bottom: 20px;
 }
 
 h1 {
-  max-width: 900px;
-  margin: 0 0 35px;
-  font-size: clamp(50px, 8vw, 110px);
-  line-height: .9;
+  max-width: 650px;
+
+  margin: 0;
+
+  font-size: clamp(48px, 6vw, 82px);
+  line-height: .88;
   font-weight: normal;
-  letter-spacing: -.05em;
+  letter-spacing: -.055em;
 }
 
 .intro {
-  max-width: 650px;
-  font-size: 18px;
-  line-height: 1.6;
+  max-width: 500px;
+
+  font-size: 15px;
+  line-height: 1.5;
+  color: #333;
 }
 
 .intro p {
-  margin: 0 0 16px;
+  margin: 0 0 10px;
+}
+
+.intro p:last-child {
+  margin-bottom: 0;
 }
 
 .scroll-note {
-  margin-top: 40px;
-  font: 11px Arial, sans-serif;
+  grid-column: 1 / -1;
+
+  margin-top: 28px;
+
+  font: 10px Arial, sans-serif;
   text-transform: uppercase;
   letter-spacing: .12em;
   color: var(--muted);
 }
 
-/* CONTROLS */
+
+/* =========================================
+   CONTROLS
+========================================= */
 
 .controls {
   position: sticky;
   top: 0;
   z-index: 100;
+
   display: flex;
-  gap: 8px;
+  gap: 7px;
   flex-wrap: wrap;
-  padding: 12px 20px;
+
+  padding: 10px 5vw;
+
   background: rgba(247,246,241,.94);
   backdrop-filter: blur(10px);
+
   border-bottom: 1px solid var(--line);
 }
 
@@ -99,19 +124,22 @@ button {
 
 input,
 select {
-  padding: 9px 11px;
+  padding: 8px 10px;
+
   border: 1px solid #bbb;
-  background: transparent;
+  background: rgba(255,255,255,.25);
 }
 
 input {
-  width: 280px;
+  width: 250px;
 }
 
 .control {
-  padding: 9px 12px;
+  padding: 8px 11px;
+
   border: 1px solid #bbb;
   background: transparent;
+
   cursor: pointer;
 }
 
@@ -123,16 +151,19 @@ input {
 #count {
   margin-left: auto;
   align-self: center;
-  font: 11px Arial, sans-serif;
+
+  font: 10px Arial, sans-serif;
   color: var(--muted);
 }
 
-/* THE MAP */
+
+/* =========================================
+   MAP / ARCHIVE
+========================================= */
 
 #map {
   position: relative;
 
-  /* Large scrollable space */
   height: 5000px;
 
   overflow: hidden;
@@ -153,21 +184,31 @@ input {
   background-size: 80px 80px;
 }
 
+
 /* subtle centre mark */
 
 #map::before {
   content: "ARCHIVE";
+
   position: absolute;
+
   left: 50%;
   top: 50%;
+
   transform: translate(-50%, -50%);
-  font: 11px Arial, sans-serif;
+
+  font: 10px Arial, sans-serif;
   letter-spacing: .2em;
-  color: #ccc;
+
+  color: #d0d0d0;
+
   pointer-events: none;
 }
 
-/* NAMES */
+
+/* =========================================
+   NAMES
+========================================= */
 
 .case {
   position: absolute;
@@ -202,7 +243,7 @@ input {
 .name {
   display: block;
 
-  font-size: clamp(18px, 2vw, 28px);
+  font-size: clamp(18px, 2vw, 29px);
   line-height: 1;
 
   white-space: nowrap;
@@ -220,7 +261,7 @@ input {
 
   margin-top: 5px;
 
-  font: 10px Arial, sans-serif;
+  font: 9px Arial, sans-serif;
 
   text-transform: uppercase;
   letter-spacing: .07em;
@@ -228,14 +269,36 @@ input {
   color: var(--muted);
 }
 
-/* HIDDEN */
+
+/* =========================================
+   HIDDEN
+========================================= */
 
 .case.hidden {
   opacity: 0;
   pointer-events: none;
 }
 
-/* MODAL */
+
+/* =========================================
+   EMPTY
+========================================= */
+
+#empty {
+  display: none;
+
+  padding: 100px 20px;
+
+  text-align: center;
+
+  font: 12px Arial, sans-serif;
+  color: var(--muted);
+}
+
+
+/* =========================================
+   MODAL
+========================================= */
 
 dialog {
   width: min(650px, 92vw);
@@ -307,34 +370,38 @@ dialog::backdrop {
   cursor: pointer;
 }
 
-/* EMPTY */
 
-#empty {
-  display: none;
-
-  padding: 100px 20px;
-
-  text-align: center;
-
-  font: 12px Arial, sans-serif;
-  color: var(--muted);
-}
-
-/* MOBILE */
+/* =========================================
+   MOBILE
+========================================= */
 
 @media (max-width: 700px) {
 
   header {
-    min-height: auto;
-    padding: 70px 22px;
+    display: block;
+
+    padding: 30px 20px 24px;
+  }
+
+  .kicker {
+    margin-bottom: 18px;
   }
 
   h1 {
-    font-size: 54px;
+    font-size: 48px;
+    margin-bottom: 22px;
   }
 
   .intro {
-    font-size: 16px;
+    font-size: 14px;
+  }
+
+  .scroll-note {
+    margin-top: 22px;
+  }
+
+  .controls {
+    padding: 9px 12px;
   }
 
   input {
@@ -364,6 +431,11 @@ dialog::backdrop {
 
 <body>
 
+
+<!-- =========================================
+     INTRO
+========================================= -->
+
 <header>
 
   <div class="kicker">
@@ -378,32 +450,27 @@ dialog::backdrop {
   <div class="intro">
 
     <p>
-      This archive brings together cases of people whose deaths
-      have been linked to police violence, detention or confinement
-      in Spain.      
+      An archive of deaths linked to police violence,
+      detention or confinement in Spain.
     </p>
 
     <p>
-      The archive is not arranged as a conventional chronology.
-      Names are distributed across a large visual field and can
-      be moved manually.
-    </p>
-
-    <p>
-      Scroll through the field, move the names and explore each
-      case individually.
+      The cases are deliberately not arranged as a chronology.
+      Move through the field and explore the names.
     </p>
 
   </div>
 
   <div class="scroll-note">
-    Scroll through the archive · drag the names
+    Scroll · drag names · click to open a case
   </div>
 
 </header>
 
 
-<!-- CONTROLS -->
+<!-- =========================================
+     CONTROLS
+========================================= -->
 
 <div class="controls">
 
@@ -418,9 +485,11 @@ dialog::backdrop {
     id="filter"
     aria-label="Filter by category"
   >
+
     <option value="">
       All categories
     </option>
+
   </select>
 
   <button
@@ -436,7 +505,9 @@ dialog::backdrop {
 </div>
 
 
-<!-- LARGE NAME MAP -->
+<!-- =========================================
+     NAME FIELD
+========================================= -->
 
 <main id="map"></main>
 
@@ -446,7 +517,9 @@ dialog::backdrop {
 </div>
 
 
-<!-- CASE INFORMATION -->
+<!-- =========================================
+     CASE INFORMATION
+========================================= -->
 
 <dialog id="dialog">
 
@@ -582,22 +655,58 @@ function dateText(date) {
 
 
 /* =========================================
-   RANDOM POSITION
+   CLUSTERED POSITION
 ========================================= */
 
 function randomPosition() {
-  const centerX = map.clientWidth / 2;
-  const centerY = 1800;
 
-  // Gaussian-ish clustering around the centre
-  const x = centerX + (Math.random() + Math.random() - 1) * 400;
-  const y = centerY + (Math.random() + Math.random() - 1) * 500;
+  const centerX =
+    map.clientWidth / 2;
+
+  const centerY =
+    1700;
+
+
+  /*
+    The smaller these numbers are,
+    the tighter the cluster.
+
+    Current cluster:
+    approximately 350px wide
+    approximately 500px tall
+  */
+
+  const x =
+    centerX +
+    (Math.random() - 0.5) * 350;
+
+  const y =
+    centerY +
+    (Math.random() - 0.5) * 500;
+
 
   return {
-    x: Math.max(120, Math.min(map.clientWidth - 300, x)),
-    y: Math.max(120, Math.min(map.offsetHeight - 180, y))
+
+    x: Math.max(
+      120,
+      Math.min(
+        map.clientWidth - 300,
+        x
+      )
+    ),
+
+    y: Math.max(
+      120,
+      Math.min(
+        map.offsetHeight - 180,
+        y
+      )
+    )
+
   };
+
 }
+
 
 /* =========================================
    CREATE NAMES
@@ -635,7 +744,7 @@ CASOS.forEach(caso => {
 
   const position =
     saved[caso.id] ||
-    randomPosition(button);
+    randomPosition();
 
 
   const item = {
@@ -775,8 +884,6 @@ CASOS.forEach(caso => {
       save();
 
 
-      /* Click only if the name wasn't moved */
-
       if (!item.moved) {
         openCase(caso);
       }
@@ -856,9 +963,7 @@ reset.addEventListener(
     items.forEach(item => {
 
       const p =
-        randomPosition(
-          item.button
-        );
+        randomPosition();
 
       item.x = p.x;
       item.y = p.y;
